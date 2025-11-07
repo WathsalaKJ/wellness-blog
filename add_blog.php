@@ -154,10 +154,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <option value="Yoga Practices">Yoga Practices</option>
                                 <option value="Meditation">Meditation</option>
                                 <option value="Nutrition">Nutrition</option>
-                                <option value="Wellness">Wellness</option>
-                                <option value="Mindfulness">Mindfulness</option>
-                                <option value="Fitness">Fitness</option>
-                                <option value="Health">Health</option>
+                                
                             </select>
                         </div>
                         

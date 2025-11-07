@@ -23,11 +23,11 @@ try {
     $db = getDB();
     
     $stmt = $db->prepare("
-        SELECT id, title, content, created_at, updated_at 
-        FROM blogPost 
-        WHERE user_id = ? 
-        ORDER BY created_at DESC
-    ");
+    SELECT id, title, content, featured_image, created_at, updated_at 
+    FROM blogPost 
+    WHERE user_id = ? 
+    ORDER BY created_at DESC
+   ");
     $stmt->execute([$userId]);
     $userPosts = $stmt->fetchAll();
     
@@ -121,10 +121,13 @@ function formatDate($date) {
                     <div class="blog-grid">
                         <?php foreach ($userPosts as $post): ?>
                             <article class="blog-card fade-in">
-                                <!-- Add placeholder image for dashboard blog cards -->
-                                <div class="blog-card-image">
-                                    <img src="/placeholder.svg?height=220&width=400" alt="<?php echo htmlspecialchars($post['title']); ?>" loading="lazy">
-                                </div>
+                               <div class="blog-card-image">
+                                <?php if (!empty($post['featured_image']) && file_exists($post['featured_image'])): ?>
+                                  <img src="<?php echo htmlspecialchars($post['featured_image']); ?>" alt="<?php echo htmlspecialchars($post['title']); ?>" loading="lazy">
+                                <?php else: ?>
+                                   <img src="/placeholder.svg?height=220&width=400" alt="<?php echo htmlspecialchars($post['title']); ?>" loading="lazy">
+                                 <?php endif; ?>
+                             </div>
                                 <div class="blog-card-content">
                                     <h3 class="blog-title"><?php echo htmlspecialchars($post['title']); ?></h3>
                                     <div class="blog-meta">

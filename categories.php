@@ -8,21 +8,37 @@ session_start();
 require_once 'config/config.php';
 require_once 'config/database.php';
 
+try {
+    $db = getDB();
+    $stmt = $db->query("
+        SELECT category, COUNT(*) as count 
+        FROM blogPost 
+        WHERE category IS NOT NULL 
+        GROUP BY category
+    ");
+    $categoryCounts = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
+} catch (Exception $e) {
+    $categoryCounts = [];
+}
+
 $categories = [
     [
         'name' => 'Yoga Practices',
         'description' => 'Calm your mind, find peace',
-        'icon' => '6684e66d2c36507218ac2fc8_service-thumbnail-img-4.png'
+        'icon' => '6684e66d2c36507218ac2fc8_service-thumbnail-img-4.png',
+        'count' => $categoryCounts['Yoga Practices'] ?? 0
     ],
     [
         'name' => 'Meditation',
         'description' => 'Inner stillness and clarity',
-        'icon' => '6684e40542090cadd7784c8c_service-thumbnail-img-1.png'
+        'icon' => '6684e40542090cadd7784c8c_service-thumbnail-img-1.png',
+        'count' => $categoryCounts['Meditation'] ?? 0
     ],
     [
         'name' => 'Nutrition',
         'description' => 'Wholesome recipes & Ayurveda',
-        'icon' => '66a86a79e8d3d468816a493d_why-choose-us-img-6.png'
+        'icon' => '66a86a79e8d3d468816a493d_why-choose-us-img-6.png',
+        'count' => $categoryCounts['Nutrition'] ?? 0
     ],
     
 ];
@@ -94,17 +110,20 @@ $categories = [
                 <div class="categories-grid">
                     <?php foreach ($categories as $index => $category): ?>
                         <div class="category-card fade-in" style="animation-delay: <?php echo ($index * 0.1); ?>s;">
-                            <div class="category-icon">
-                                <img src="assets/images/<?php echo htmlspecialchars($category['icon']); ?>" 
-                                     alt="<?php echo htmlspecialchars($category['name']); ?>" 
-                                     onerror="this.style.display='none'; this.parentElement.innerHTML='<i class=\"fas fa-spa\"></i>';">
-                            </div>
-                            <h3 class="category-title"><?php echo htmlspecialchars($category['name']); ?></h3>
-                            <p class="category-description"><?php echo htmlspecialchars($category['description']); ?></p>
-                            <a href="index.php?category=<?php echo urlencode($category['name']); ?>" class="category-read-more">
-                                Read More <i class="fas fa-arrow-right"></i>
-                            </a>
+                         <div class="category-icon">
+                           <img src="assets/images/<?php echo htmlspecialchars($category['icon']); ?>" 
+                                alt="<?php echo htmlspecialchars($category['name']); ?>" 
+                                onerror="this.style.display='none'; this.parentElement.innerHTML='<i class=\"fas fa-spa\"></i>';">
                         </div>
+                        <h3 class="category-title"><?php echo htmlspecialchars($category['name']); ?></h3>
+                        <p class="category-description"><?php echo htmlspecialchars($category['description']); ?></p>
+                        <p class="category-count" style="color: var(--text-light); font-size: 0.9rem; margin: var(--spacing-sm) 0;">
+                        <?php echo $category['count']; ?> <?php echo $category['count'] === 1 ? 'post' : 'posts'; ?>
+                        </p>
+                          <a href="category_posts.php?category=<?php echo urlencode($category['name']); ?>" class="category-read-more">
+                               Read More <i class="fas fa-arrow-right"></i>
+                         </a>
+                     </div>
                     <?php endforeach; ?>
                 </div>
             </section>

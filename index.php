@@ -23,13 +23,14 @@ try {
     $totalPages = ceil($totalPosts / $postsPerPage);
     
     // Get posts for current page
-    $stmt = $db->prepare("
-        SELECT bp.id, bp.title, bp.content, bp.created_at, u.username, u.id as user_id
-        FROM blogPost bp
-        JOIN user u ON bp.user_id = u.id
-        ORDER BY bp.created_at DESC
-        LIMIT ? OFFSET ?
-    ");
+    // Get posts for current page
+   $stmt = $db->prepare("
+    SELECT bp.id, bp.title, bp.content, bp.category, bp.featured_image, bp.created_at, u.username, u.id as user_id
+    FROM blogPost bp
+    JOIN user u ON bp.user_id = u.id
+    ORDER BY bp.created_at DESC
+    LIMIT ? OFFSET ?
+  ");
     $stmt->bindValue(1, $postsPerPage, PDO::PARAM_INT);
     $stmt->bindValue(2, $offset, PDO::PARAM_INT);
     $stmt->execute();
@@ -51,12 +52,9 @@ function formatDate($date) {
     return date('M d, Y', strtotime($date));
 }
 
-$categories = ['Yoga', 'Meditation', 'Nutrition', 'Wellness', 'Mindfulness'];
+$categories = ['Yoga', 'Meditation', 'Nutrition'];
 
-function getRandomCategory() {
-    global $categories;
-    return $categories[array_rand($categories)];
-}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -140,36 +138,40 @@ function getRandomCategory() {
             </div>
             <div class="blog-grid-footer fade-in">
                 <?php
-                try {
-                    $db = getDB();
-                    $stmt = $db->prepare("
-                        SELECT bp.id, bp.title, bp.content, bp.created_at, u.username
-                        FROM blogPost bp
-                        JOIN user u ON bp.user_id = u.id
-                        ORDER BY bp.created_at DESC
-                        LIMIT 3
-                    ");
-                    $stmt->execute();
-                    $latestPosts = $stmt->fetchAll();
-                    
-                    foreach ($latestPosts as $index => $post):
-                        $preview = strlen($post['content']) > 100 ? substr(strip_tags($post['content']), 0, 100) . '...' : strip_tags($post['content']);
+           try {
+                 $db = getDB();
+                 $stmt = $db->prepare("
+                   SELECT bp.id, bp.title, bp.content, bp.featured_image, bp.created_at, u.username
+                   FROM blogPost bp
+                  JOIN user u ON bp.user_id = u.id
+                  ORDER BY bp.created_at DESC
+                   LIMIT 3
+                ");
+              $stmt->execute();
+               $latestPosts = $stmt->fetchAll();
+    
+                 foreach ($latestPosts as $index => $post):
+                   $preview = strlen($post['content']) > 100 ? substr(strip_tags($post['content']), 0, 100) . '...' : strip_tags($post['content']);
                     ?>
-                        <article class="blog-card-small fade-in" style="animation-delay: <?php echo ($index * 0.1); ?>s;">
-                            <div class="blog-card-image">
-                                <img src="/placeholder.svg?height=150&width=300" alt="<?php echo htmlspecialchars($post['title']); ?>" loading="lazy">
-                            </div>
-                            <div class="blog-card-content">
-                                <h3><?php echo htmlspecialchars($post['title']); ?></h3>
-                                <p><?php echo htmlspecialchars($preview); ?></p>
-                                <a href="view_blog.php?id=<?php echo $post['id']; ?>" class="read-more">Read More →</a>
-                            </div>
+                      <article class="blog-card-small fade-in" style="animation-delay: <?php echo ($index * 0.1); ?>s;">
+                       <div class="blog-card-image">
+                           <?php if (!empty($post['featured_image']) && file_exists($post['featured_image'])): ?>
+                             <img src="<?php echo htmlspecialchars($post['featured_image']); ?>" alt="<?php echo htmlspecialchars($post['title']); ?>" loading="lazy">
+                          <?php else: ?>
+                               <img src="/placeholder.svg?height=150&width=300" alt="<?php echo htmlspecialchars($post['title']); ?>" loading="lazy">
+                         <?php endif; ?>
+                        </div>
+                      <div class="blog-card-content">
+                        <h3><?php echo htmlspecialchars($post['title']); ?></h3>
+                           <p><?php echo htmlspecialchars($preview); ?></p>
+                           <a href="view_blog.php?id=<?php echo $post['id']; ?>" class="read-more">Read More →</a>
+                          </div>
                         </article>
-                    <?php endforeach;
-                } catch (Exception $e) {
-                    echo '<p>No blog posts available yet.</p>';
-                }
-                ?>
+                     <?php endforeach;
+                          } catch (Exception $e) {
+                           echo '<p>No blog posts available yet.</p>';
+                              }
+                           ?>
             </div>
         </div>
     </section>
@@ -196,7 +198,7 @@ function getRandomCategory() {
                             <!-- Add placeholder image for each blog card -->
                             <div class="blog-card-image">
                                 <img src="/placeholder.svg?height=220&width=400" alt="<?php echo htmlspecialchars($post['title']); ?>" loading="lazy">
-                                <span class="category-badge"><?php echo getRandomCategory(); ?></span>
+                                <span class="category-badge"><?php echo htmlspecialchars($post['category'] ?: 'Uncategorized'); ?></span>
                             </div>
                             <div class="blog-card-content">
                                 <h3 class="blog-title"><?php echo htmlspecialchars($post['title']); ?></h3>
