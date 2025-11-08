@@ -130,55 +130,58 @@ $categories = ['Yoga', 'Meditation', 'Nutrition'];
         </div>
     </section>
     <!-- Latest Blogs Footer Section -->
-    <section class="latest-blogs-section">
-        <div class="container">
-            <div class="section-header">
-                 <img src="assets/images/blog-hero-bg.jpg" alt="Blog background" class="page-hero-image" onerror="this.src='assets/images/about-hero.jpg'">
-                <h2>Latest Blog Posts</h2>
-                <p>Stay inspired with our latest wellness insights</p>
-            </div>
-            <div class="blog-grid-footer fade-in">
-                <?php
-           try {
-                 $db = getDB();
-                 $stmt = $db->prepare("
-                   SELECT bp.id, bp.title, bp.content, bp.featured_image, bp.created_at, u.username
-                   FROM blogPost bp
-                  JOIN user u ON bp.user_id = u.id
-                  ORDER BY bp.created_at DESC
-                   LIMIT 1
-                ");
-              $stmt->execute();
-               $latestPosts = $stmt->fetchAll();
-    
-                 foreach ($latestPosts as $index => $post):
-                   $preview = strlen($post['content']) > 100 ? substr(strip_tags($post['content']), 0, 100) . '...' : strip_tags($post['content']);
-                    ?>
-                      <article class="blog-card-small fade-in" style="animation-delay: <?php echo ($index * 0.1); ?>s;">
-                       <div class="blog-card-image">
-                           <?php if (!empty($post['featured_image']) && file_exists($post['featured_image'])): ?>
-                             <img src="<?php echo htmlspecialchars($post['featured_image']); ?>" alt="<?php echo htmlspecialchars($post['title']); ?>" loading="lazy">
-                          <?php else: ?>
-                               <img src="/placeholder.svg?height=150&width=300" alt="<?php echo htmlspecialchars($post['title']); ?>" loading="lazy">
-                         <?php endif; ?>
-                        </div>
-                      <div class="blog-card-content">
-                        <h3><?php echo htmlspecialchars($post['title']); ?></h3>
-                           <p><?php echo htmlspecialchars($preview); ?></p>
-                           <a href="view_blog.php?id=<?php echo $post['id']; ?>" class="read-more">Read More →</a>
-                          </div>
-                        </article>
-                     <?php endforeach;
-                          } catch (Exception $e) {
-                           echo '<p>No blog posts available yet.</p>';
-                              }
-                           ?>
-            </div>
-             <div style="text-align: center; margin-top: var(--spacing-xl);">
-                <a href="latest_blogs.php" class="btn btn-primary btn-lg">View All Blogs</a>
-            </div>
+    <!-- Latest Blogs Footer Section -->
+<section class="latest-blogs-section">
+    <img src="assets/images/blog-hero-bg.jpg" alt="Blog background" class="page-hero-image" onerror="this.src='assets/images/about-hero.jpg'">
+    <div class="container">
+        <div class="section-header">
+            <h2>Latest Blog Posts</h2>
+            <p>Stay inspired with our latest wellness insights</p>
         </div>
-    </section>
+        <div class="blog-grid-footer fade-in">
+            <?php
+            try {
+                $db = getDB();
+                $stmt = $db->prepare("
+                    SELECT bp.id, bp.title, bp.content, bp.featured_image, bp.created_at, u.username
+                    FROM blogPost bp
+                    JOIN user u ON bp.user_id = u.id
+                    ORDER BY bp.created_at DESC
+                    LIMIT 1
+                ");
+                $stmt->execute();
+                $latestPosts = $stmt->fetchAll();
+    
+                foreach ($latestPosts as $index => $post):
+                    $preview = strlen($post['content']) > 100 ? substr(strip_tags($post['content']), 0, 100) . '...' : strip_tags($post['content']);
+            ?>
+                <article class="blog-card-small fade-in" style="animation-delay: <?php echo ($index * 0.1); ?>s;">
+                    <div class="blog-card-image">
+                        <?php if (!empty($post['featured_image']) && file_exists($post['featured_image'])): ?>
+                            <img src="<?php echo htmlspecialchars($post['featured_image']); ?>" alt="<?php echo htmlspecialchars($post['title']); ?>" loading="lazy">
+                        <?php else: ?>
+                            <img src="/placeholder.svg?height=200&width=400" alt="<?php echo htmlspecialchars($post['title']); ?>" loading="lazy">
+                        <?php endif; ?>
+                    </div>
+                    <div class="blog-card-content">
+                        <h3><?php echo htmlspecialchars($post['title']); ?></h3>
+                        <p><?php echo htmlspecialchars($preview); ?></p>
+                        <a href="view_blog.php?id=<?php echo $post['id']; ?>" class="read-more">Read More →</a>
+                    </div>
+                </article>
+            <?php 
+                endforeach;
+            } catch (Exception $e) {
+                echo '<p style="color: white; text-align: center;">No blog posts available yet.</p>';
+            }
+            ?>
+        </div>
+        <div style="text-align: center; margin-top: var(--spacing-xl);">
+            <a href="latest_blogs.php" class="btn btn-primary btn-lg">View All Blogs</a>
+        </div>
+    </div>
+</section>
+    
 
     
 

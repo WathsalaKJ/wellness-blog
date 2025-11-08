@@ -149,10 +149,8 @@ function formatDate($date) {
     </main>
 
     <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <p>&copy; 2025 SoulBalance.com - Your Wellness Journey Starts Here</p>
-        </div>
+       <footer class="footer">
+        <?php include 'includes/footer.php'; ?>
     </footer>
 
     <script src="assets/css/js/main.js"></script>
