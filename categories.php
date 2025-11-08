@@ -68,7 +68,7 @@ $categories = [
             </div>
             <nav class="nav-links">
                 <a href="index.php">Home</a>
-                <a href="index.php">Blog</a>
+                <a href="latest_blogs.php">Blog</a>
                 <a href="categories.php" class="active">Categories</a>
                 <a href="about.php">About</a>
                 <a href="contact.php">Contact</a>
@@ -87,116 +87,50 @@ $categories = [
         </div>
     </header>
 
-    <!-- Breadcrumb Hero Section -->
-    <section class="breadcrumb-hero">
-        <div class="container">
-            <div class="breadcrumb-content">
-                <div class="breadcrumb">
-                    <img src="assets/images/about-hero.jpg" alt="Our wellness community practicing together">
-                    <a href="index.php">Home</a>
-                    <span>&gt;&gt;</span>
-                    <span>Categories</span>
-                </div>
-                <h1 class="page-title">Blog <span>Categories</span></h1>
+   <!-- Enhanced Breadcrumb Hero Section - Same Style as About Page -->
+<section class="breadcrumb-hero">
+    <img src="assets/images/about-hero.jpg" alt="Wellness background" onerror="this.src='assets/images/about-hero.jpg'">
+    <div class="container">
+        <div class="breadcrumb-content">
+            <h1 class="page-title">Blog <span>Ctagories</span></h1>
+            <div class="breadcrumb">
+                <a href="index.php">Home</a> <span>&gt;&gt;Categories</span>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- Main Content -->
-    <main class="main-content">
-        <div class="container">
-            <!-- Categories Grid -->
-            <section class="categories-section">
-                <div class="categories-grid">
-                    <?php foreach ($categories as $index => $category): ?>
-                        <div class="category-card fade-in" style="animation-delay: <?php echo ($index * 0.1); ?>s;">
-                         <div class="category-icon">
-                           <img src="assets/images/<?php echo htmlspecialchars($category['icon']); ?>" 
-                                alt="<?php echo htmlspecialchars($category['name']); ?>" 
-                                onerror="this.style.display='none'; this.parentElement.innerHTML='<i class=\"fas fa-spa\"></i>';">
+<!-- Main Content -->
+<main class="main-content">
+    <div class="container">
+        <!-- Categories Grid -->
+        <section class="categories-section">
+            <div class="categories-grid">
+                <?php foreach ($categories as $index => $category): ?>
+                    <div class="category-card fade-in" style="animation-delay: <?php echo ($index * 0.1); ?>s;">
+                        <div class="category-icon">
+                            <img src="assets/images/<?php echo htmlspecialchars($category['icon']); ?>" 
+                                 alt="<?php echo htmlspecialchars($category['name']); ?>" 
+                                 onerror="this.style.display='none';">
                         </div>
                         <h3 class="category-title"><?php echo htmlspecialchars($category['name']); ?></h3>
                         <p class="category-description"><?php echo htmlspecialchars($category['description']); ?></p>
-                        <p class="category-count" style="color: var(--text-light); font-size: 0.9rem; margin: var(--spacing-sm) 0;">
-                        <?php echo $category['count']; ?> <?php echo $category['count'] === 1 ? 'post' : 'posts'; ?>
+                        <p class="category-count">
+                            <?php echo $category['count']; ?> <?php echo $category['count'] === 1 ? 'post' : 'posts'; ?>
                         </p>
-                          <a href="category_posts.php?category=<?php echo urlencode($category['name']); ?>" class="category-read-more">
-                               Read More <i class="fas fa-arrow-right"></i>
-                         </a>
-                     </div>
-                    <?php endforeach; ?>
-                </div>
-            </section>
-        </div>
-    </main>
-
-    <!-- Enhanced Footer -->
-    <footer class="footer-enhanced">
-        <div class="container">
-            <div class="footer-content">
-                <!-- Brand & Description -->
-                <div class="footer-brand">
-                    <h2>
-                        <span class="brand-soul">Soul</span><span class="brand-balance">Balance</span>
-                    </h2>
-                    <p>We are passionate about creating a space where every body is family.</p>
-                    
-                    <div class="footer-address">
-                        <strong>Address:</strong>
-                        <p>University of Moratuwa,<br>Katubedda,<br>Colombo</p>
+                        <a href="category_posts.php?category=<?php echo urlencode($category['name']); ?>" class="category-read-more">
+                            Read More <i class="fas fa-arrow-right"></i>
+                        </a>
                     </div>
-                    
-                    <div class="footer-contact">
-                        <strong>Contact Details:</strong>
-                        <p>0711234568<br>0112556984<br>soulblance@gmail.com</p>
-                    </div>
-                </div>
-
-                <!-- Quick Links -->
-                <div class="footer-column">
-                    <h3>Quick Links</h3>
-                    <div class="footer-links">
-                        <a href="index.php">Home</a>
-                        <a href="index.php#blog">Blog</a>
-                        <a href="categories.php">Categories</a>
-                        <a href="about.php">About</a>
-                    </div>
-                </div>
-
-                <!-- Explore -->
-                <div class="footer-column">
-                    <h3>Explore</h3>
-                    <div class="footer-links">
-                        <a href="categories.php?cat=yoga">Yoga Practices</a>
-                        <a href="categories.php?cat=meditation">Meditation & Mindfulness</a>
-                        <a href="categories.php?cat=nutrition">Nutrition & Ayurveda</a>
-                    </div>
-                </div>
-
-                <!-- Community -->
-                <div class="footer-column">
-                    <h3>Community</h3>
-                    <div class="footer-links">
-                        <a href="about.php">Join Us</a>
-                        <a href="register.php">Create Account</a>
-                        <a href="dashboard.php">Write for Us</a>
-                        <a href="#faq">FAQ</a>
-                    </div>
-                </div>
+                <?php endforeach; ?>
             </div>
+        </section>
+    </div>
+</main>
 
-            <!-- Decorative Image -->
-            <div class="footer-decoration">
-                <img src="assets/images/footer-decoration.jpg" alt="Yoga decoration" loading="lazy" onerror="this.parentElement.style.display='none'">
-            </div>
-        </div>
-
-        <!-- Copyright Bar -->
-        <div class="footer-bottom">
-            <p>© 2025, SoulBalance.com</p>
-        </div>
+     <footer class="footer">
+        <?php include 'includes/footer.php'; ?>
     </footer>
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
     <script>
         // Intersection Observer for animations

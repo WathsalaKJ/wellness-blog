@@ -28,7 +28,7 @@ try {
     $db = getDB();
     
     // Get post details including image path
-    $stmt = $db->prepare("SELECT id, user_id, featured_image FROM blogPost WHERE id = ?");
+    $stmt = $db->prepare("SELECT id, user_id, title, featured_image FROM blogPost WHERE id = ?");
     $stmt->execute([$postId]);
     $post = $stmt->fetch();
     
@@ -39,8 +39,10 @@ try {
         exit();
     }
     
-    // Check if user owns the post
-    if ($post['user_id'] !== $userId) {
+    // Enhanced authorization check with type casting and logging
+    if ((int)$post['user_id'] !== (int)$userId) {
+        error_log("Delete permission denied - Post user_id: " . $post['user_id'] . " (type: " . gettype($post['user_id']) . 
+                  "), Session user_id: " . $userId . " (type: " . gettype($userId) . ")");
         $_SESSION['error_message'] = 'You do not have permission to delete this post';
         header('Location: dashboard.php');
         exit();
@@ -48,18 +50,25 @@ try {
     
     // Delete the image file if it exists
     if ($post['featured_image'] && file_exists($post['featured_image'])) {
-        unlink($post['featured_image']);
+        if (!unlink($post['featured_image'])) {
+            error_log("Failed to delete image file: " . $post['featured_image']);
+        }
     }
     
     // Delete the post from database
     $deleteStmt = $db->prepare("DELETE FROM blogPost WHERE id = ? AND user_id = ?");
     $deleteStmt->execute([$postId, $userId]);
     
-    $_SESSION['success_message'] = 'Post deleted successfully!';
+    if ($deleteStmt->rowCount() > 0) {
+        $_SESSION['success_message'] = 'Post deleted successfully!';
+    } else {
+        error_log("No rows deleted - Post ID: $postId, User ID: $userId");
+        $_SESSION['error_message'] = 'Failed to delete post. Please try again.';
+    }
     
 } catch (Exception $e) {
     error_log("Delete Post Error: " . $e->getMessage());
-    $_SESSION['error_message'] = 'Failed to delete post. Please try again.';
+    $_SESSION['error_message'] = 'Failed to delete post: ' . $e->getMessage();
 }
 
 // Redirect to dashboard

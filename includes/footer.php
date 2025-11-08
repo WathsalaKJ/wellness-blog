@@ -1,6 +1,7 @@
 <!-- Enhanced Footer -->
 <footer class="footer-enhanced">
     <div class="container" style="position: relative;">
+        
         <div class="footer-content">
             <!-- Brand & Description -->
             <div class="footer-brand">
@@ -48,7 +49,7 @@
                     <a href="about.php">Join Us</a>
                     <a href="register.php">Create Account</a>
                     <a href="dashboard.php">Write for Us</a>
-                    <a href="#faq">FAQ</a>
+                    <a href="contact.php">FAQ</a>
                 </div>
             </div>
         </div>

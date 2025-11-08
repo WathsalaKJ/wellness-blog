@@ -125,12 +125,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <p class="editor-subtitle">Share your wellness insights with the community</p>
                 </div>
                 <div class="editor-actions">
-                    <button type="submit" form="blog-form" class="btn btn-primary btn-lg">
-                        <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v3.586L7.707 9.293a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 10.586V7z"/>
-                        </svg>
-                        Publish Post
-                    </button>
+                    
                 </div>
             </div>
             
@@ -158,9 +153,80 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             </select>
                         </div>
                         
-                        <div class="form-group">
+                       <div class="form-group">
                             <label for="content">Content *</label>
-                            <textarea id="content" name="content" placeholder="Write your wellness article here..." required rows="15"><?php echo htmlspecialchars($_POST['content'] ?? ''); ?></textarea>
+                            <div class="editor-toolbar">
+                                <button type="button" class="editor-btn" onclick="formatText('bold')" title="Bold (Ctrl+B)">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M6 4h8a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z"></path>
+                                        <path d="M6 12h9a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z"></path>
+                                    </svg>
+                                    <span>Bold</span>
+                                </button>
+                                <button type="button" class="editor-btn" onclick="formatText('italic')" title="Italic (Ctrl+I)">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <line x1="19" y1="4" x2="10" y2="4"></line>
+                                        <line x1="14" y1="20" x2="5" y2="20"></line>
+                                        <line x1="15" y1="4" x2="9" y2="20"></line>
+                                    </svg>
+                                    <span>Italic</span>
+                                </button>
+                                <button type="button" class="editor-btn" onclick="formatText('underline')" title="Underline (Ctrl+U)">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M6 3v7a6 6 0 0 0 6 6 6 6 0 0 0 6-6V3"></path>
+                                        <line x1="4" y1="21" x2="20" y2="21"></line>
+                                    </svg>
+                                    <span>Underline</span>
+                                </button>
+                                <div class="toolbar-divider"></div>
+                                <button type="button" class="editor-btn" onclick="formatText('insertUnorderedList')" title="Bullet List">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <line x1="8" y1="6" x2="21" y2="6"></line>
+                                        <line x1="8" y1="12" x2="21" y2="12"></line>
+                                        <line x1="8" y1="18" x2="21" y2="18"></line>
+                                        <line x1="3" y1="6" x2="3.01" y2="6"></line>
+                                        <line x1="3" y1="12" x2="3.01" y2="12"></line>
+                                        <line x1="3" y1="18" x2="3.01" y2="18"></line>
+                                    </svg>
+                                    <span>List</span>
+                                </button>
+                                <button type="button" class="editor-btn" onclick="formatText('insertOrderedList')" title="Numbered List">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <line x1="10" y1="6" x2="21" y2="6"></line>
+                                        <line x1="10" y1="12" x2="21" y2="12"></line>
+                                        <line x1="10" y1="18" x2="21" y2="18"></line>
+                                        <path d="M4 6h1v4"></path>
+                                        <path d="M4 10h2"></path>
+                                        <path d="M6 18H4c0-1 2-2 2-3s-1-1.5-2-1"></path>
+                                    </svg>
+                                    <span>Numbered</span>
+                                </button>
+                                <div class="toolbar-divider"></div>
+                                <button type="button" class="editor-btn" onclick="insertLink()" title="Insert Link">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                                        <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                                    </svg>
+                                    <span>Link</span>
+                                </button>
+                                <button type="button" class="editor-btn" onclick="formatText('formatBlock', 'h2')" title="Heading">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M4 12h8"></path>
+                                        <path d="M4 18V6"></path>
+                                        <path d="M12 18V6"></path>
+                                        <path d="M17 12h3"></path>
+                                        <path d="M17 18h3"></path>
+                                        <path d="M17 6h3"></path>
+                                    </svg>
+                                    <span>Heading</span>
+                                </button>
+                            </div>
+                            <div id="contentEditor" class="content-editor" contenteditable="true" placeholder="Write your wellness article here..."></div>
+                            <textarea id="content" name="content" required rows="15" style="display: none;"><?php echo htmlspecialchars($_POST['content'] ?? ''); ?></textarea>
+                            <div class="editor-footer">
+                                <span class="word-count" id="wordCount">0 words</span>
+                                <span class="char-count" id="charCount">0 characters</span>
+                            </div>
                         </div>
                     </div>
 
@@ -192,19 +258,130 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 <div class="form-actions">
                     <a href="dashboard.php" class="btn btn-secondary">Cancel</a>
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        
+                        Publish Post
+                    </button>
                 </div>
             </form>
         </div>
     </main>
 
     <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <p>&copy; 2025 SoulBalance - Your Wellness Journey</p>
-        </div>
+     <footer class="footer">
+        <?php include 'includes/footer.php'; ?>
     </footer>
 
     <script>
+        const contentEditor = document.getElementById('contentEditor');
+        const hiddenTextarea = document.getElementById('content');
+        const wordCount = document.getElementById('wordCount');
+        const charCount = document.getElementById('charCount');
+
+        // Sync editor content with hidden textarea
+        // Sync editor content with hidden textarea
+        function syncContent() {
+            let content = contentEditor.innerHTML;
+            
+            // Clean up empty divs
+            content = content.replace(/<div><\/div>/g, '<br>');
+            content = content.replace(/<div><br><\/div>/g, '<br>');
+            
+            // Convert divs to paragraphs for better formatting
+            content = content.replace(/<div>/g, '<p>');
+            content = content.replace(/<\/div>/g, '</p>');
+            
+            // Remove multiple consecutive breaks
+            content = content.replace(/(<br\s*\/?>\s*){3,}/gi, '<br><br>');
+            
+            // Wrap text nodes in paragraphs if not already wrapped
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = content;
+            
+            let finalContent = '';
+            Array.from(tempDiv.childNodes).forEach(node => {
+                if (node.nodeType === Node.TEXT_NODE && node.textContent.trim()) {
+                    finalContent += `<p>${node.textContent.trim()}</p>`;
+                } else if (node.nodeType === Node.ELEMENT_NODE) {
+                    finalContent += node.outerHTML;
+                }
+            });
+            
+            hiddenTextarea.value = finalContent || content;
+            updateCounts();
+        }
+
+        // Update word and character counts
+        function updateCounts() {
+            const text = contentEditor.innerText || '';
+            const words = text.trim().split(/\s+/).filter(word => word.length > 0).length;
+            const chars = text.length;
+            
+            wordCount.textContent = `${words} word${words !== 1 ? 's' : ''}`;
+            charCount.textContent = `${chars} character${chars !== 1 ? 's' : ''}`;
+        }
+
+        // Format text
+        function formatText(command, value = null) {
+            document.execCommand(command, false, value);
+            contentEditor.focus();
+            syncContent();
+        }
+
+        // Insert link
+        function insertLink() {
+            const url = prompt('Enter the URL:');
+            if (url) {
+                const selection = window.getSelection();
+                if (selection.toString().length === 0) {
+                    const linkText = prompt('Enter the link text:');
+                    if (linkText) {
+                        document.execCommand('insertHTML', false, `<a href="${url}" target="_blank">${linkText}</a>`);
+                    }
+                } else {
+                    document.execCommand('createLink', false, url);
+                }
+                syncContent();
+            }
+            contentEditor.focus();
+        }
+
+        // Listen for content changes
+        contentEditor.addEventListener('input', syncContent);
+        contentEditor.addEventListener('paste', function(e) {
+            e.preventDefault();
+            const text = e.clipboardData.getData('text/plain');
+            document.execCommand('insertText', false, text);
+            syncContent();
+        });
+
+        // Keyboard shortcuts
+        contentEditor.addEventListener('keydown', function(e) {
+            if (e.ctrlKey || e.metaKey) {
+                switch(e.key.toLowerCase()) {
+                    case 'b':
+                        e.preventDefault();
+                        formatText('bold');
+                        break;
+                    case 'i':
+                        e.preventDefault();
+                        formatText('italic');
+                        break;
+                    case 'u':
+                        e.preventDefault();
+                        formatText('underline');
+                        break;
+                }
+            }
+        });
+
+        // Load existing content if editing
+        const existingContent = hiddenTextarea.value;
+        if (existingContent) {
+            contentEditor.innerHTML = existingContent;
+            updateCounts();
+        }
+
         // Image upload preview
         const dropzone = document.getElementById('dropzone');
         const fileInput = document.getElementById('featured_image');
@@ -212,7 +389,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         const previewImg = document.getElementById('preview-img');
         const uploadContent = document.getElementById('uploadContent');
 
-        // Prevent default drag behaviors
         ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
             dropzone.addEventListener(eventName, preventDefaults, false);
             document.body.addEventListener(eventName, preventDefaults, false);
@@ -223,7 +399,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             e.stopPropagation();
         }
 
-        // Highlight drop area
         ['dragenter', 'dragover'].forEach(eventName => {
             dropzone.addEventListener(eventName, () => dropzone.classList.add('highlight'), false);
         });
@@ -232,7 +407,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             dropzone.addEventListener(eventName, () => dropzone.classList.remove('highlight'), false);
         });
 
-        // Handle dropped files
         dropzone.addEventListener('drop', handleDrop, false);
 
         function handleDrop(e) {
@@ -245,20 +419,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
 
-        // File input change
         fileInput.addEventListener('change', previewImage);
 
         function previewImage() {
             const file = fileInput.files[0];
             if (file) {
-                // Validate file type
                 const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
                 if (!validTypes.includes(file.type)) {
                     alert('Please select a valid image file (JPG, PNG, GIF, WEBP)');
                     return;
                 }
                 
-                // Validate file size (5MB)
                 if (file.size > 5 * 1024 * 1024) {
                     alert('File size must be less than 5MB');
                     return;
@@ -281,7 +452,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             previewImg.src = '';
         }
 
-        // Fade in animation
         const observer = new IntersectionObserver(entries => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {

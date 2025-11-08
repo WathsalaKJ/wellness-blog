@@ -68,7 +68,8 @@ try {
     exit();
 }
 
-$isOwner = isset($_SESSION['user_id']) && $_SESSION['user_id'] === $post['user_id'];
+// Enhanced owner check with type casting
+$isOwner = isset($_SESSION['user_id']) && (int)$_SESSION['user_id'] === (int)$post['user_id'];
 
 function formatDate($date) {
     return date('F j, Y \a\t g:i A', strtotime($date));
@@ -215,9 +216,18 @@ function getAvatarColor($username) {
                 </div>
                 
                 <div class="blog-content">
-                    <?php echo nl2br(htmlspecialchars($post['content'])); ?>
+                    <?php 
+                    // Render HTML content properly
+                    $content = $post['content'];
+                    
+                    // Security: Allow only safe HTML tags
+                    $allowedTags = '<p><br><strong><b><em><i><u><h1><h2><h3><h4><ul><ol><li><a><blockquote><code><pre><div>';
+                    $cleanContent = strip_tags($content, $allowedTags);
+                    
+                    // Output the HTML content
+                    echo $cleanContent;
+                    ?>
                 </div>
-                
                 <?php if ($isOwner): ?>
                     <div class="blog-actions">
                         <a href="edit_blog.php?id=<?php echo $post['id']; ?>" class="btn btn-secondary">✏️ Edit Post</a>

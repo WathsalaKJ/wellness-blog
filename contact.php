@@ -126,10 +126,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
             <nav class="nav-links">
                 <a href="index.php">Home</a>
-                <a href="index.php#blog">Blog</a>
+                <a href="latest_blogs.php">Blog</a>
                 <a href="categories.php">Categories</a>
                 <a href="about.php">About</a>
-                <a href="contact.php" class="active">Contact Us</a>
+                <a href="contact.php" class="active">Contact</a>
             </nav>
             <div class="nav-actions">
                 <?php if (isset($_SESSION['user_id'])): ?>
@@ -146,175 +146,169 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
     </header>
 
-    <!-- Hero Section -->
-    <section class="contact-hero">
+   
+
+    <!-- Enhanced Hero Section - Same Style as About Page -->
+<section class="contact-hero">
+    <img src="assets/images/about-hero.jpg" alt="Contact us background">
+    <div class="container">
         <div class="contact-hero-content fade-in">
-            <img src="assets/images/about-hero.jpg" alt="Our wellness community practicing together">
             <h1>Contact <span class="highlight">us</span></h1>
             <div class="contact-breadcrumb">
-
-                <a href="index.php">Home</a>
-                <span>»</span>
-                <span>Contact us</span>
+                <a href="index.php">Home</a> <span>&gt;&gt;Contact</span> <span>us</span>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- Main Contact Section -->
-    <main class="contact-main">
-        <div class="contact-container">
-            <div class="contact-layout">
-                <!-- Contact Form Section -->
-                <div class="contact-form-section fade-in">
-                    <p class="section-title">Contact Now</p>
-                    <h2>Have some questions!</h2>
-                    
-                    <?php if ($error): ?>
-                        <div class="alert alert-error"><?php echo htmlspecialchars($error); ?></div>
-                    <?php endif; ?>
-                    
-                    <?php if ($success): ?>
-                        <div class="alert alert-success"><?php echo $success; ?></div>
-                    <?php endif; ?>
-                    
-                    <form method="POST" class="contact-form">
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="firstName">First Name</label>
-                                <input 
-                                    type="text" 
-                                    id="firstName" 
-                                    name="firstName" 
-                                    required 
-                                    placeholder="First Name"
-                                    value="<?php echo htmlspecialchars($_POST['firstName'] ?? ''); ?>"
-                                    minlength="2"
-                                    maxlength="50"
-                                >
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="lastName">Last Name</label>
-                                <input 
-                                    type="text" 
-                                    id="lastName" 
-                                    name="lastName" 
-                                    required 
-                                    placeholder="Last Name"
-                                    value="<?php echo htmlspecialchars($_POST['lastName'] ?? ''); ?>"
-                                    minlength="2"
-                                    maxlength="50"
-                                >
-                            </div>
-                        </div>
-                        
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="email">Email</label>
-                                <input 
-                                    type="email" 
-                                    id="email" 
-                                    name="email" 
-                                    required 
-                                    placeholder="Email"
-                                    value="<?php echo htmlspecialchars($_POST['email'] ?? ''); ?>"
-                                >
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="phone">Phone</label>
-                                <input 
-                                    type="tel" 
-                                    id="phone" 
-                                    name="phone" 
-                                    placeholder="Phone"
-                                    value="<?php echo htmlspecialchars($_POST['phone'] ?? ''); ?>"
-                                >
-                            </div>
-                        </div>
-                        
+<!-- Main Contact Section -->
+<main class="contact-main">
+    <div class="contact-container">
+        <div class="contact-layout">
+            <!-- Contact Form Section -->
+            <div class="contact-form-section fade-in">
+                <p class="section-title">Contact Now</p>
+                <h2>Have some questions!</h2>
+                
+                <?php if ($error): ?>
+                    <div class="alert alert-error"><?php echo htmlspecialchars($error); ?></div>
+                <?php endif; ?>
+                
+                <?php if ($success): ?>
+                    <div class="alert alert-success"><?php echo $success; ?></div>
+                <?php endif; ?>
+                
+                <form method="POST" class="contact-form">
+                    <div class="form-row">
                         <div class="form-group">
-                            <label for="subject">Subject</label>
-                            <select id="subject" name="subject" required>
-                                <option value="">Subject</option>
-                                <option value="General Inquiry" <?php echo (isset($_POST['subject']) && $_POST['subject'] === 'General Inquiry') ? 'selected' : ''; ?>>General Inquiry</option>
-                                <option value="Wellness Support" <?php echo (isset($_POST['subject']) && $_POST['subject'] === 'Wellness Support') ? 'selected' : ''; ?>>Wellness Support</option>
-                                <option value="Yoga Classes" <?php echo (isset($_POST['subject']) && $_POST['subject'] === 'Yoga Classes') ? 'selected' : ''; ?>>Yoga Classes</option>
-                                <option value="Meditation Guidance" <?php echo (isset($_POST['subject']) && $_POST['subject'] === 'Meditation Guidance') ? 'selected' : ''; ?>>Meditation Guidance</option>
-                                <option value="Collaboration" <?php echo (isset($_POST['subject']) && $_POST['subject'] === 'Collaboration') ? 'selected' : ''; ?>>Collaboration</option>
-                                <option value="Technical Issue" <?php echo (isset($_POST['subject']) && $_POST['subject'] === 'Technical Issue') ? 'selected' : ''; ?>>Technical Issue</option>
-                                <option value="Feedback" <?php echo (isset($_POST['subject']) && $_POST['subject'] === 'Feedback') ? 'selected' : ''; ?>>Feedback</option>
-                                <option value="Other" <?php echo (isset($_POST['subject']) && $_POST['subject'] === 'Other') ? 'selected' : ''; ?>>Other</option>
-                            </select>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="message">Message</label>
-                            <textarea 
-                                id="message" 
-                                name="message" 
+                            <label for="firstName">First Name</label>
+                            <input 
+                                type="text" 
+                                id="firstName" 
+                                name="firstName" 
                                 required 
-                                minlength="10"
-                                maxlength="2000"
-                                placeholder="Send us your message and we will contact you asap"
-                            ><?php echo htmlspecialchars($_POST['message'] ?? ''); ?></textarea>
-                            <small><?php echo isset($_POST['message']) ? strlen($_POST['message']) : 0; ?> / 20 characters</small>
+                                placeholder="First Name"
+                                value="<?php echo htmlspecialchars($_POST['firstName'] ?? ''); ?>"
+                                minlength="2"
+                                maxlength="50"
+                            >
                         </div>
                         
-                        <button type="submit" class="btn-submit">
-                            Submit
-                        </button>
-                    </form>
-                </div>
-
-                <!-- Contact Image & Info Section -->
-                <div class="contact-image-section fade-in" style="animation-delay: 0.2s;">
-                    <div class="contact-image-wrapper">
-                        <img src="assets/images/contact-yoga.jpg" alt="Woman practicing yoga in peaceful outdoor setting">
+                        <div class="form-group">
+                            <label for="lastName">Last Name</label>
+                            <input 
+                                type="text" 
+                                id="lastName" 
+                                name="lastName" 
+                                required 
+                                placeholder="Last Name"
+                                value="<?php echo htmlspecialchars($_POST['lastName'] ?? ''); ?>"
+                                minlength="2"
+                                maxlength="50"
+                            >
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input 
+                                type="email" 
+                                id="email" 
+                                name="email" 
+                                required 
+                                placeholder="Email"
+                                value="<?php echo htmlspecialchars($_POST['email'] ?? ''); ?>"
+                            >
+                        </div>
                         
-                        <div class="contact-info-overlay">
-                            <div class="contact-info-item">
-                                <div class="contact-icon">
-                                    <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
-                                    </svg>
-                                </div>
-                                <div class="contact-details">
-                                    <p>0112556984</p>
-                                </div>
-                            </div>
-                            
-                            <div class="contact-info-item">
-                                <div class="contact-icon">
-                                    <svg viewBox="0 0 20 20" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-                                        <polyline points="22,6 12,13 2,6"></polyline>
-                                    </svg>
-                                </div>
-                                <div class="contact-details">
-                                    <p>soulbalance@gmail.com</p>
-                                </div>
-                            </div>
-                            
-                            <div class="contact-info-item">
-                                <div class="contact-icon">
-                                    <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                                        <circle cx="12" cy="10" r="3"></circle>
-                                    </svg>
-                                </div>
-                                <div class="contact-details">
-                                    <p>University of Moratuwa,Katubedda,Colombo</p>
-                                    
-                                </div>
-                            </div>
+                        
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="subject">Subject</label>
+                        <select id="subject" name="subject" required>
+                            <option value="">Subject</option>
+                            <option value="General Inquiry" <?php echo (isset($_POST['subject']) && $_POST['subject'] === 'General Inquiry') ? 'selected' : ''; ?>>General Inquiry</option>
+                            <option value="Wellness Support" <?php echo (isset($_POST['subject']) && $_POST['subject'] === 'Wellness Support') ? 'selected' : ''; ?>>Wellness Support</option>
+                            <option value="Yoga Classes" <?php echo (isset($_POST['subject']) && $_POST['subject'] === 'Yoga Classes') ? 'selected' : ''; ?>>Yoga Classes</option>
+                            <option value="Meditation Guidance" <?php echo (isset($_POST['subject']) && $_POST['subject'] === 'Meditation Guidance') ? 'selected' : ''; ?>>Meditation Guidance</option>
+                            <option value="Collaboration" <?php echo (isset($_POST['subject']) && $_POST['subject'] === 'Collaboration') ? 'selected' : ''; ?>>Collaboration</option>
+                            <option value="Technical Issue" <?php echo (isset($_POST['subject']) && $_POST['subject'] === 'Technical Issue') ? 'selected' : ''; ?>>Technical Issue</option>
+                            <option value="Feedback" <?php echo (isset($_POST['subject']) && $_POST['subject'] === 'Feedback') ? 'selected' : ''; ?>>Feedback</option>
+                            <option value="Other" <?php echo (isset($_POST['subject']) && $_POST['subject'] === 'Other') ? 'selected' : ''; ?>>Other</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="message">Message</label>
+                        <textarea 
+                            id="message" 
+                            name="message" 
+                            required 
+                            minlength="10"
+                            maxlength="2000"
+                            placeholder="Send us your message and we will contact you asap"
+                        ><?php echo htmlspecialchars($_POST['message'] ?? ''); ?></textarea>
+                        <small><?php echo isset($_POST['message']) ? strlen($_POST['message']) : 0; ?> / 2000 characters</small>
+                    </div>
+                    
+                    <button type="submit" class="btn-submit">
+                        Submit
+                    </button>
+                </form>
+            </div>
+
+            <!-- Contact Image & Info Section - NO FADE IN BOX -->
+            <div class="contact-image-section fade-in" style="animation-delay: 0.2s;">
+                <div class="contact-image-wrapper">
+                    <img src="assets/images/contact-yoga.jpg" alt="Woman practicing yoga in peaceful outdoor setting">
+                </div>
+                
+                <!-- Professional Contact Info - Below Image -->
+                <div class="contact-info-overlay">
+                    <div class="contact-info-item">
+                        <div class="contact-icon">
+                            <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                            </svg>
+                        </div>
+                        <div class="contact-details">
+                            <p>0112556984</p>
+                            <small>Phone Support</small>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-info-item">
+                        <div class="contact-icon">
+                            <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                                <polyline points="22,6 12,13 2,6"></polyline>
+                            </svg>
+                        </div>
+                        <div class="contact-details">
+                            <p>soulbalance@gmail.com</p>
+                            <small>Email Support</small>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-info-item">
+                        <div class="contact-icon">
+                            <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                <circle cx="12" cy="10" r="3"></circle>
+                            </svg>
+                        </div>
+                        <div class="contact-details">
+                            <p>University of Moratuwa</p>
+                            <small>Katubedda, Colombo</small>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </main>
-
+    </div>
+</main>
     <!-- FAQ Section -->
     <section class="faq-section">
         <div class="faq-container">
@@ -346,12 +340,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </div>
                 </details>
 
-                <details class="faq-item fade-in" style="animation-delay: 0.3s;">
-                    <summary>What types of yoga classes do you offer?</summary>
-                    <div class="faq-answer">
-                        <p>We offer a wide variety of yoga practices including Hatha Yoga, Vinyasa Flow, Yin Yoga, Restorative Yoga, and Power Yoga. Classes are available for all levels - from complete beginners to advanced practitioners. Contact us to learn more about our current class schedule and find the perfect practice for your needs.</p>
-                    </div>
-                </details>
+               
 
                 <details class="faq-item fade-in" style="animation-delay: 0.4s;">
                     <summary>Are your meditation sessions suitable for beginners?</summary>
@@ -360,12 +349,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </div>
                 </details>
 
-                <details class="faq-item fade-in" style="animation-delay: 0.5s;">
-                    <summary>Can I visit your wellness center in person?</summary>
-                    <div class="faq-answer">
-                        <p>Yes, we welcome visitors! Our center is located at 3517 W. Gray St. Pennsylvania 57867. We're open Monday through Friday, 9am-6pm EST. We recommend scheduling an appointment in advance to ensure we can give you our full attention and provide a proper tour of our facilities.</p>
-                    </div>
-                </details>
+                
 
                 <details class="faq-item fade-in" style="animation-delay: 0.6s;">
                     <summary>Do you offer virtual wellness programs?</summary>

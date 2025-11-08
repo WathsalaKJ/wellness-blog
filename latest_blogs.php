@@ -89,29 +89,27 @@ function formatDate($date) {
 
     <!-- Page Hero Section -->
        <section class="page-hero">
-           <div class="page-hero-overlay"></div>
-           <img src="assets/images/blog-hero-bg.jpg" alt="Blog background" class="page-hero-image" onerror="this.src='assets/images/about-hero.jpg'">
+    <img src="assets/images/blog-hero-bg.jpg" alt="Blog background" class="page-hero-image" onerror="this.src='assets/images/about-hero.jpg'">
     
-           <div class="page-hero-content">
-             <div class="container">
-                <div class="page-hero-title">
+    <div class="page-hero-content">
+        <div class="container">
+            <div class="page-hero-title">
                 <h1>
                     <span class="title-bold">Latest </span>
                     <span class="title-italic">Blogs</span>
                 </h1>
-                </div>
+            </div>
             
-              <div class="page-hero-bottom">
-                <div></div>
+            <div class="page-hero-bottom">
                 <div class="page-breadcrumb">
                     <a href="index.php">Home</a>
                     <span>&gt;&gt;</span>
                     <span>Blog</span>
                 </div>
-              </div>
-           </div>
-         </div>
-        </section> 
+            </div>
+        </div>
+    </div>
+</section>
 
     <!-- Latest News & Insights Section -->
     <main class="main-content">

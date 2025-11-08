@@ -32,11 +32,22 @@ try {
     $stmt->execute([$postId]);
     $post = $stmt->fetch();
     
-    if (!$post || $post['user_id'] !== $userId) {
+    // Enhanced authorization check with type casting
+    if (!$post) {
+        $_SESSION['error_message'] = 'Post not found';
+        header('Location: dashboard.php');
+        exit();
+    }
+    
+    // Ensure both values are integers for comparison
+    if ((int)$post['user_id'] !== (int)$userId) {
+        $_SESSION['error_message'] = 'You do not have permission to edit this post';
         header('Location: dashboard.php');
         exit();
     }
 } catch (Exception $e) {
+    error_log("Edit Blog Error: " . $e->getMessage());
+    $_SESSION['error_message'] = 'Failed to load post';
     header('Location: dashboard.php');
     exit();
 }
@@ -178,7 +189,78 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         
                         <div class="form-group">
                             <label for="content">Content *</label>
-                            <textarea id="content" name="content" required rows="15"><?php echo htmlspecialchars($post['content']); ?></textarea>
+                            <div class="editor-toolbar">
+                                <button type="button" class="editor-btn" onclick="formatText('bold')" title="Bold (Ctrl+B)">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M6 4h8a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z"></path>
+                                        <path d="M6 12h9a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z"></path>
+                                    </svg>
+                                    <span>Bold</span>
+                                </button>
+                                <button type="button" class="editor-btn" onclick="formatText('italic')" title="Italic (Ctrl+I)">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <line x1="19" y1="4" x2="10" y2="4"></line>
+                                        <line x1="14" y1="20" x2="5" y2="20"></line>
+                                        <line x1="15" y1="4" x2="9" y2="20"></line>
+                                    </svg>
+                                    <span>Italic</span>
+                                </button>
+                                <button type="button" class="editor-btn" onclick="formatText('underline')" title="Underline (Ctrl+U)">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M6 3v7a6 6 0 0 0 6 6 6 6 0 0 0 6-6V3"></path>
+                                        <line x1="4" y1="21" x2="20" y2="21"></line>
+                                    </svg>
+                                    <span>Underline</span>
+                                </button>
+                                <div class="toolbar-divider"></div>
+                                <button type="button" class="editor-btn" onclick="formatText('insertUnorderedList')" title="Bullet List">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <line x1="8" y1="6" x2="21" y2="6"></line>
+                                        <line x1="8" y1="12" x2="21" y2="12"></line>
+                                        <line x1="8" y1="18" x2="21" y2="18"></line>
+                                        <line x1="3" y1="6" x2="3.01" y2="6"></line>
+                                        <line x1="3" y1="12" x2="3.01" y2="12"></line>
+                                        <line x1="3" y1="18" x2="3.01" y2="18"></line>
+                                    </svg>
+                                    <span>List</span>
+                                </button>
+                                <button type="button" class="editor-btn" onclick="formatText('insertOrderedList')" title="Numbered List">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <line x1="10" y1="6" x2="21" y2="6"></line>
+                                        <line x1="10" y1="12" x2="21" y2="12"></line>
+                                        <line x1="10" y1="18" x2="21" y2="18"></line>
+                                        <path d="M4 6h1v4"></path>
+                                        <path d="M4 10h2"></path>
+                                        <path d="M6 18H4c0-1 2-2 2-3s-1-1.5-2-1"></path>
+                                    </svg>
+                                    <span>Numbered</span>
+                                </button>
+                                <div class="toolbar-divider"></div>
+                                <button type="button" class="editor-btn" onclick="insertLink()" title="Insert Link">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                                        <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                                    </svg>
+                                    <span>Link</span>
+                                </button>
+                                <button type="button" class="editor-btn" onclick="formatText('formatBlock', 'h2')" title="Heading">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M4 12h8"></path>
+                                        <path d="M4 18V6"></path>
+                                        <path d="M12 18V6"></path>
+                                        <path d="M17 12h3"></path>
+                                        <path d="M17 18h3"></path>
+                                        <path d="M17 6h3"></path>
+                                    </svg>
+                                    <span>Heading</span>
+                                </button>
+                            </div>
+                            <div id="contentEditor" class="content-editor" contenteditable="true" placeholder="Write your wellness article here..."></div>
+                            <textarea id="content" name="content" required rows="15" style="display: none;"><?php echo htmlspecialchars($post['content']); ?></textarea>
+                            <div class="editor-footer">
+                                <span class="word-count" id="wordCount">0 words</span>
+                                <span class="char-count" id="charCount">0 characters</span>
+                            </div>
                         </div>
                     </div>
 
@@ -222,10 +304,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </main>
 
     <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <p>&copy; 2025 SoulBalance - Your Wellness Journey</p>
-        </div>
+     <footer class="footer">
+        <?php include 'includes/footer.php'; ?>
     </footer>
 
     <script>

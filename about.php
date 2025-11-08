@@ -53,96 +53,99 @@ require_once 'config/database.php';
         </div>
     </header>
 
-    <!-- Hero Section -->
-    <section class="about-hero">
-        <div class="container">
-            <img src="assets/images/about-hero.jpg" alt="Our wellness community practicing together">
-            <div class="about-hero-content">
-                <h1>About <em>Us</em></h1>
-                <div class="breadcrumb">
-                    <a href="index.php">Home</a> >> <span>About Us</span>
-                </div>
+    
+
+<!-- Enhanced Hero Section - Matching Figma -->
+<section class="about-hero">
+    <img src="assets/images/about-hero.jpg" alt="Wellness community background">
+    <div class="container">
+        <div class="about-hero-content">
+            <div class="page-hero-title">
+                <h1><span>About</span> <em>Us</em></h1>
+            </div>
+           
+            <div class="breadcrumb">
+                <a href="index.php">Home</a> <span>&gt;&gt; About</span> <span>Us</span>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- Main Content -->
-    <main class="main-content">
-        <div class="container">
-            <!-- Our Journey Section -->
-            <section class="about-section fade-in">
-                <div class="section-header">
-                    <h2>Our Journey</h2>
+<!-- Main Content -->
+<main class="main-content">
+    <div class="container">
+        <!-- Our Journey Section with Side Image -->
+        <section class="about-section fade-in">
+            <div class="about-content">
+                <div class="about-image">
+                    <img src="assets/images/about-journey.jpg" alt="Yoga practice">
                 </div>
-                <div class="about-content">
-                    <div class="about-text">
-                        <p>SoulBalance was born from a simple belief: that everyone deserves access to the transformative power of yoga and holistic wellness. In a world that moves at an overwhelming pace, we recognized the need for a sanctuary where people could learn, share, and grow together on their wellness journey.</p>
-                        <p>What started as a small community of yoga enthusiasts has blossomed into a thriving platform where thousands of wellness seekers from around the globe connect, inspire, and support each other. We're more than just a blog – we're a movement dedicated to making wellness accessible, inclusive, and sustainable for all.</p>
+                <div class="about-text">
+                    <div class="section-header">
+                        <h2>Our Journey</h2>
                     </div>
-                    <div class="about-image">
-                        <img src="assets/images/about-journey.jpg" alt="Our wellness community practicing together">
-                    </div>
+                    <p>SoulBalance was born from a simple belief: that everyone deserves access to the transformative power of yoga and holistic wellness. In a world that moves at an overwhelming pace, we recognized the need for a sanctuary where people could learn, share, and grow together on their wellness journey.</p>
+                    <p>What started as a small community of yoga enthusiasts has blossomed into a thriving platform where thousands of wellness seekers from around the globe connect, inspire, and support each other. We're more than just a blog – we're a movement dedicated to making wellness accessible, inclusive, and sustainable for all.</p>
                 </div>
-            </section>
+            </div>
+        </section>
 
-            <!-- Our Mission Section -->
-            <section class="about-section fade-in">
-                <div class="section-header">
-                    <h2>Our Mission</h2>
+        <!-- Our Mission Section with 3 Cards and Decorative Image -->
+        <section class="about-section mission-section fade-in">
+            <div class="section-header">
+                <h2>Our Mission</h2>
+            </div>
+            <div class="mission-grid">
+                <div class="mission-card scale-in">
+                    <div class="mission-icon">
+                        <img src="assets/images/66a869f95af9c18c2126b71c_why-choose-us-img-5.png" alt="Healthy Body">
+                    </div>
+                    <h3>Healthy Body</h3>
+                    <p>We believe that yoga is more than just a physical practice.</p>
                 </div>
-                <div class="mission-grid">
-                    <div class="mission-card scale-in">
-                        <div class="mission-icon">
-                            <i class="fas fa-heartbeat fa-2x"></i>
-                        </div>
-                        <h3>Healthy Body</h3>
-                        <p>We believe that yoga is more than just physical practice. It's about building strength, flexibility, and vitality.</p>
+                <div class="mission-card scale-in" style="animation-delay: 0.1s;">
+                    <div class="mission-icon">
+                        <img src="assets/images/66a86a79e8d3d468816a493d_why-choose-us-img-6.png" alt="Clam Mind">
                     </div>
-                    <div class="mission-card scale-in" style="animation-delay: 0.1s;">
-                        <div class="mission-icon">
-                            <i class="fas fa-brain fa-2x"></i>
-                        </div>
-                        <h3>Calm Mind</h3>
-                        <p>We believe that yoga is more than just physical practice. It's about cultivating mental clarity and peace.</p>
-                    </div>
-                    <div class="mission-card scale-in" style="animation-delay: 0.2s;">
-                        <div class="mission-icon">
-                            <i class="fas fa-spa fa-2x"></i>
-                        </div>
-                        <h3>Stress Relief</h3>
-                        <p>We believe that yoga is more than just physical practice. It's about releasing tension and finding inner peace.</p>
-                    </div>
+                    <h3>Clam Mind</h3>
+                    <p>We believe that yoga is more than just a physical practice.</p>
                 </div>
-            </section>
+                <div class="mission-card scale-in" style="animation-delay: 0.2s;">
+                    <div class="mission-icon">
+                        <img src="assets/images/66a869f95af9c18c2126b71c_why-choose-us-img-5.png" alt="Stress relief">
+                    </div>
+                    <h3>Stress relief</h3>
+                    <p>We believe that yoga is more than just a physical practice.</p>
+                </div>
+            </div>
+        </section>
 
-            <!-- Values Section -->
-            <section class="about-section fade-in">
-                <div class="section-header">
-                    <h2>Our Values</h2>
+        <!-- Values Section -->
+        <section class="about-section fade-in">
+            <div class="section-header">
+                <h2>Our Values</h2>
+            </div>
+            <div class="values-grid">
+                <div class="value-item">
+                    <h4>Inclusivity</h4>
+                    <p>Wellness is for everyone, regardless of age, ability, or background.</p>
                 </div>
-                <div class="values-grid">
-                    <div class="value-item">
-                        <h4>Inclusivity</h4>
-                        <p>Wellness is for everyone, regardless of age, ability, or background.</p>
-                    </div>
-                    <div class="value-item">
-                        <h4>Authenticity</h4>
-                        <p>We honor the true principles of yoga and wellness practices.</p>
-                    </div>
-                    <div class="value-item">
-                        <h4>Community</h4>
-                        <p>Together, we create a supportive environment for shared growth.</p>
-                    </div>
-                    <div class="value-item">
-                        <h4>Sustainability</h4>
-                        <p>We're committed to creating a wellness movement that lasts.</p>
-                    </div>
+                <div class="value-item">
+                    <h4>Authenticity</h4>
+                    <p>We honor the true principles of yoga and wellness practices.</p>
                 </div>
-            </section>
-
-            
-        </div>
-    </main>
+                <div class="value-item">
+                    <h4>Community</h4>
+                    <p>Together, we create a supportive environment for shared growth.</p>
+                </div>
+                <div class="value-item">
+                    <h4>Sustainability</h4>
+                    <p>We're committed to creating a wellness movement that lasts.</p>
+                </div>
+            </div>
+        </section>
+    </div>
+</main>
 
      <footer class="footer">
         <?php include 'includes/footer.php'; ?>
