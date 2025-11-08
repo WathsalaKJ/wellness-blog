@@ -1,15 +1,6 @@
--- ============================================
--- SOULBALANCE WELLNESS BLOG - DATABASE SETUP
--- Enhanced with featured image support
--- ============================================
-
--- Create database
 CREATE DATABASE IF NOT EXISTS soulbalance_blog;
 USE soulbalance_blog;
 
--- ============================================
--- USER TABLE
--- ============================================
 CREATE TABLE IF NOT EXISTS user (
     id INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(50) NOT NULL UNIQUE,
@@ -83,6 +74,20 @@ CREATE TABLE IF NOT EXISTS blog_ratings (
     INDEX idx_user (user_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- ============================================
+-- BLOG PUBLIC RATINGS TABLE (for non-logged-in users)
+-- ============================================
+CREATE TABLE IF NOT EXISTS blog_ratings_public (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    blog_post_id INT NOT NULL,
+    ip_address VARCHAR(45) NOT NULL,
+    rating TINYINT NOT NULL CHECK (rating >= 1 AND rating <= 5),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (blog_post_id) REFERENCES blogPost(id) ON DELETE CASCADE,
+    UNIQUE KEY unique_ip_rating (blog_post_id, ip_address),
+    INDEX idx_blog_post (blog_post_id),
+    INDEX idx_ip_address (ip_address)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 -- ============================================
 -- BLOG COMMENTS TABLE
 -- ============================================

@@ -133,6 +133,32 @@ function getAvatarColor($username) {
         </div>
     </header>
 
+    <!-- Page Hero Section -->
+<section class="page-hero">
+    <div class="page-hero-overlay"></div>
+    <img src="assets/images/blog-hero-bg.jpg" alt="Blog background" class="page-hero-image" onerror="this.src='assets/images/about-hero.jpg'">
+    
+    <div class="page-hero-content">
+        <div class="container">
+            <div class="page-hero-title">
+                <h1>
+                    <span class="title-bold">Blog </span>
+                    <span class="title-italic">details</span>
+                </h1>
+            </div>
+            
+            <div class="page-hero-bottom">
+                <div></div>
+                <div class="page-breadcrumb">
+                    <a href="index.php">Home</a>
+                    <span>&gt;&gt;</span>
+                    <span>Blog details</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
     <!-- Main Content -->
     <main class="main-content">
         <div class="container">
@@ -371,6 +397,111 @@ function getAvatarColor($username) {
             });
         }
 
+        const ratingStarsPublic = document.querySelectorAll('.star-public');
+const ratingMessage = document.getElementById('ratingMessage');
+
+// Check if user has already rated (stored in localStorage)
+const userRatingKey = `blog_${postId}_rating`;
+const existingRating = localStorage.getItem(userRatingKey);
+
+if (existingRating) {
+    updateStarDisplay(parseInt(existingRating));
+    showRatingMessage(`You rated this post ${existingRating} stars`, false);
+}
+
+ratingStarsPublic.forEach(star => {
+    star.addEventListener('click', function() {
+        const rating = parseInt(this.dataset.rating);
+        submitPublicRating(rating);
+    });
+
+    star.addEventListener('mouseenter', function() {
+        const rating = parseInt(this.dataset.rating);
+        ratingStarsPublic.forEach((s, index) => {
+            if (index < rating) {
+                s.classList.add('hover');
+            } else {
+                s.classList.remove('hover');
+            }
+        });
+    });
+});
+
+document.getElementById('ratingStarsPublic')?.addEventListener('mouseleave', function() {
+    ratingStarsPublic.forEach(s => s.classList.remove('hover'));
+});
+
+function submitPublicRating(rating) {
+    // Check if already rated
+    if (existingRating) {
+        showRatingMessage('You have already rated this post', true);
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append('action', 'add_public_rating');
+    formData.append('post_id', postId);
+    formData.append('rating', rating);
+
+    fetch('api/blog_interactions.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Store rating in localStorage
+            localStorage.setItem(userRatingKey, rating);
+            
+            // Update star display
+            updateStarDisplay(rating);
+            
+            // Update average rating display
+            document.querySelectorAll('.rating-stars .star, .rating-stars-public .star-public').forEach((star, index) => {
+                if (index < Math.round(data.avg_rating)) {
+                    star.classList.add('filled');
+                    star.classList.add('selected');
+                } else {
+                    star.classList.remove('filled');
+                    star.classList.remove('selected');
+                }
+            });
+
+            document.querySelector('.rating-text').textContent = 
+                `${data.avg_rating} (${data.total_ratings} ${data.total_ratings === 1 ? 'rating' : 'ratings'})`;
+
+            showRatingMessage(`Thank you! You rated this post ${rating} stars`, false);
+            showNotification('Rating submitted successfully!', 'success');
+        } else {
+            showRatingMessage(data.message, true);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showRatingMessage('Failed to submit rating', true);
+    });
+}
+
+function updateStarDisplay(rating) {
+    ratingStarsPublic.forEach((star, index) => {
+        if (index < rating) {
+            star.classList.add('selected');
+        } else {
+            star.classList.remove('selected');
+        }
+    });
+}
+
+function showRatingMessage(message, isError) {
+    ratingMessage.textContent = message;
+    ratingMessage.style.display = 'block';
+    ratingMessage.style.color = isError ? 'var(--danger)' : 'var(--primary)';
+    
+    setTimeout(() => {
+        ratingMessage.style.display = 'none';
+    }, 3000);
+}
+
         // Comment form submission
         const commentForm = document.getElementById('commentForm');
         const commentText = document.getElementById('commentText');
@@ -492,7 +623,7 @@ function getAvatarColor($username) {
                             </div>
                         </div>
                         <button class="btn-delete-comment" data-comment-id="${comment.id}" title="Delete comment">
-                            🗑️
+                            
                         </button>
                     </div>
                     <p class="comment-text">${escapeHtml(comment.comment).replace(/\n/g, '<br>')}</p>

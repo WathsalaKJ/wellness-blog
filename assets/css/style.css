@@ -448,7 +448,7 @@ a:hover { color: var(--primary-dark); }
   font-size: 1.5rem;
   letter-spacing: 1px;
   margin-bottom: var(--spacing-sm);
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter-Regular", sans-serif;
   text-transform: uppercase;
 }
 
@@ -458,7 +458,7 @@ a:hover { color: var(--primary-dark); }
   font-size: clamp(2.5rem, 5vw, 4.375rem);
   line-height: 1.1;
   font-weight: 900;
-  font-family: 'Source Sans Pro', sans-serif;
+  font-family: "SourceSansPro-Black", sans-serif;
   text-transform: lowercase;
 }
 
@@ -468,7 +468,7 @@ a:hover { color: var(--primary-dark); }
   margin-bottom: var(--spacing-lg);
   line-height: 1.5;
   font-weight: 500;
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter-Medium", sans-serif;;
 }
 
 .hero-testimonial {
@@ -1405,9 +1405,7 @@ a:hover { color: var(--primary-dark); }
    ABOUT PAGE SPECIFIC STYLES
    ============================================ */
 
-/* ============================================
-   ABOUT PAGE SPECIFIC STYLES - EXACT SCREENSHOT DESIGN
-   ============================================ */
+
 
 /* About Hero Section */
 .about-hero {
@@ -2269,7 +2267,42 @@ a:hover { color: var(--primary-dark); }
     color: var(--primary);
     font-weight: 600;
     margin-top: var(--spacing-sm);
+  
     animation: fadeIn 0.3s ease;
+}
+.rating-public {
+  margin: var(--spacing-md) 0;
+}
+
+.rating-stars-public {
+  display: flex;
+  gap: 8px;
+  margin: var(--spacing-md) 0;
+}
+
+.star-public {
+  font-size: 2.5rem;
+  color: #e0e0e0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.star-public:hover,
+.star-public.hover {
+  color: #fbbf24;
+  transform: scale(1.1);
+}
+
+.star-public.selected {
+  color: #fbbf24;
+}
+
+.rating-message {
+  margin-top: var(--spacing-sm);
+  color: var(--primary);
+  font-weight: 600;
+  animation: fadeIn 0.3s ease;
 }
 
 /* ============================================

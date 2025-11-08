@@ -97,7 +97,67 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'total_ratings' => $ratingData['total_ratings']
             ]);
 
-        } elseif ($action === 'delete_comment') {
+         } elseif ($action === 'add_public_rating') {
+    $rating = intval($_POST['rating'] ?? 0);
+    
+    if ($rating < 1 || $rating > 5) {
+        http_response_code(400);
+        echo json_encode(['success' => false, 'message' => 'Rating must be between 1 and 5']);
+        exit();
+    }
+
+    // Use IP address as identifier for public ratings
+    $ipAddress = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
+    
+    // Check if this IP has already rated this post
+    $stmt = $db->prepare("
+        SELECT id FROM blog_ratings_public 
+        WHERE blog_post_id = ? AND ip_address = ?
+    ");
+    $stmt->execute([$postId, $ipAddress]);
+    
+    if ($stmt->fetch()) {
+        http_response_code(400);
+        echo json_encode(['success' => false, 'message' => 'You have already rated this post']);
+        exit();
+    }
+
+    // Insert public rating
+    $stmt = $db->prepare("
+        INSERT INTO blog_ratings_public (blog_post_id, ip_address, rating) 
+        VALUES (?, ?, ?)
+    ");
+    $stmt->execute([$postId, $ipAddress, $rating]);
+
+    // Get updated average rating (combine user and public ratings)
+    $stmt = $db->prepare("
+        SELECT 
+            (SELECT AVG(rating) FROM blog_ratings WHERE blog_post_id = ?) as user_avg,
+            (SELECT COUNT(*) FROM blog_ratings WHERE blog_post_id = ?) as user_count,
+            (SELECT AVG(rating) FROM blog_ratings_public WHERE blog_post_id = ?) as public_avg,
+            (SELECT COUNT(*) FROM blog_ratings_public WHERE blog_post_id = ?) as public_count
+    ");
+    $stmt->execute([$postId, $postId, $postId, $postId]);
+    $ratingData = $stmt->fetch();
+    
+    $totalRatings = ($ratingData['user_count'] ?? 0) + ($ratingData['public_count'] ?? 0);
+    $avgRating = 0;
+    
+    if ($totalRatings > 0) {
+        $userSum = ($ratingData['user_avg'] ?? 0) * ($ratingData['user_count'] ?? 0);
+        $publicSum = ($ratingData['public_avg'] ?? 0) * ($ratingData['public_count'] ?? 0);
+        $avgRating = round(($userSum + $publicSum) / $totalRatings, 1);
+    }
+
+    echo json_encode([
+        'success' => true, 
+        'message' => 'Rating submitted successfully',
+        'avg_rating' => $avgRating,
+        'total_ratings' => $totalRatings
+    ]);
+
+
+    } elseif ($action === 'delete_comment') {
             $commentId = intval($_POST['comment_id'] ?? 0);
             
             // Check if user owns the comment

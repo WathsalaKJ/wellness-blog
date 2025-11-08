@@ -78,30 +78,30 @@ $categories = ['Yoga', 'Meditation', 'Nutrition'];
 <body>
     <!-- Navigation -->
     <header class="navbar">
-        <div class="container">
-            <div class="nav-brand">
-                <h1>SoulBalance</h1>
-            </div>
-            <nav class="nav-links">
-                <a href="index.php" class="active">Home</a>
-                <a href="index.php">Blog</a>
-                <a href="categories.php">Categories</a>
-                <a href="about.php">About</a>
-                <a href="contact.php">Contact</a>
-            </nav>
-            <div class="nav-actions">
-                <?php if (isset($_SESSION['user_id'])): ?>
-                    <div class="user-info">
-                        <span class="username">Welcome, <?php echo htmlspecialchars($_SESSION['username']); ?></span>
-                        <a href="dashboard.php" class="btn btn-primary btn-sm">Dashboard</a>
-                        <a href="logout.php" class="btn btn-secondary btn-sm logout-link">Logout</a>
-                    </div>
-                <?php else: ?>
-                    <a href="login.php" class="btn btn-primary btn-sm">Sign In</a>
-                <?php endif; ?>
-            </div>
+    <div class="container">
+        <div class="nav-brand">
+            <h1>SoulBalance</h1>
         </div>
-    </header>
+        <nav class="nav-links">
+            <a href="index.php" class="active">Home</a>
+            <a href="latest_blogs.php">Blog</a> <!-- Changed link -->
+            <a href="categories.php">Categories</a>
+            <a href="about.php">About</a>
+            <a href="contact.php">Contact</a>
+        </nav>
+        <div class="nav-actions">
+            <?php if (isset($_SESSION['user_id'])): ?>
+                <div class="user-info">
+                    <span class="username">Welcome, <?php echo htmlspecialchars($_SESSION['username']); ?></span>
+                    <a href="dashboard.php" class="btn btn-primary btn-sm">Dashboard</a>
+                    <a href="logout.php" class="btn btn-secondary btn-sm logout-link">Logout</a>
+                </div>
+            <?php else: ?>
+                <a href="login.php" class="btn btn-primary btn-sm">Sign In</a>
+            <?php endif; ?>
+        </div>
+    </div>
+</header>
 
     <!-- Hero Section -->
     <section class="hero">
@@ -173,63 +173,13 @@ $categories = ['Yoga', 'Meditation', 'Nutrition'];
                               }
                            ?>
             </div>
+             <div style="text-align: center; margin-top: var(--spacing-xl);">
+                <a href="latest_blogs.php" class="btn btn-primary btn-lg">View All Blogs</a>
+            </div>
         </div>
     </section>
 
-    <!-- Main Content -->
-    <main class="main-content">
-        <div class="container">
-            <!-- Blog Section Header -->
-            <div class="section-header fade-in">
-                <h2>Latest News & Insights</h2>
-                <p>Explore wellness tips and transformation stories</p>
-            </div>
-
-            <!-- Blog Grid -->
-            <section class="blog-grid fade-in">
-                <?php if (empty($posts)): ?>
-                    <div class="empty-state" style="grid-column: 1/-1;">
-                        <h2>No blog posts yet</h2>
-                        <p>Check back soon for wellness tips and inspiration.</p>
-                    </div>
-                <?php else: ?>
-                    <?php foreach ($posts as $index => $post): ?>
-                        <article class="blog-card fade-in" style="animation-delay: <?php echo ($index * 0.1); ?>s;">
-                            <!-- Add placeholder image for each blog card -->
-                            <div class="blog-card-image">
-                                <img src="/placeholder.svg?height=220&width=400" alt="<?php echo htmlspecialchars($post['title']); ?>" loading="lazy">
-                                <span class="category-badge"><?php echo htmlspecialchars($post['category'] ?: 'Uncategorized'); ?></span>
-                            </div>
-                            <div class="blog-card-content">
-                                <h3 class="blog-title"><?php echo htmlspecialchars($post['title']); ?></h3>
-                                <div class="blog-meta">
-                                    <span class="author">By <?php echo htmlspecialchars($post['username']); ?></span>
-                                    <span class="date"><?php echo formatDate($post['created_at']); ?></span>
-                                </div>
-                                <p class="blog-preview"><?php echo getPreview($post['content']); ?></p>
-                                <a href="view_blog.php?id=<?php echo $post['id']; ?>" class="read-more">Read More →</a>
-                            </div>
-                        </article>
-                    <?php endforeach; ?>
-                <?php endif; ?>
-            </section>
-
-            <!-- Pagination -->
-            <?php if ($totalPages > 1): ?>
-                <div class="pagination">
-                    <?php if ($page > 1): ?>
-                        <a href="index.php?page=<?php echo $page - 1; ?>" class="btn btn-secondary">Previous</a>
-                    <?php endif; ?>
-                    
-                    <span class="page-info">Page <?php echo $page; ?> of <?php echo $totalPages; ?></span>
-                    
-                    <?php if ($page < $totalPages): ?>
-                        <a href="index.php?page=<?php echo $page + 1; ?>" class="btn btn-secondary">Next</a>
-                    <?php endif; ?>
-                </div>
-            <?php endif; ?>
-        </div>
-    </main>
+    
 
     <!-- Footer -->
     <footer class="footer">
