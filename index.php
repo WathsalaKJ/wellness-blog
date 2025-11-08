@@ -133,6 +133,7 @@ $categories = ['Yoga', 'Meditation', 'Nutrition'];
     <section class="latest-blogs-section">
         <div class="container">
             <div class="section-header">
+                 <img src="assets/images/blog-hero-bg.jpg" alt="Blog background" class="page-hero-image" onerror="this.src='assets/images/about-hero.jpg'">
                 <h2>Latest Blog Posts</h2>
                 <p>Stay inspired with our latest wellness insights</p>
             </div>
@@ -145,7 +146,7 @@ $categories = ['Yoga', 'Meditation', 'Nutrition'];
                    FROM blogPost bp
                   JOIN user u ON bp.user_id = u.id
                   ORDER BY bp.created_at DESC
-                   LIMIT 3
+                   LIMIT 1
                 ");
               $stmt->execute();
                $latestPosts = $stmt->fetchAll();
