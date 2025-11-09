@@ -103,8 +103,8 @@ $categories = ['Yoga', 'Meditation', 'Nutrition'];
     </div>
 </header>
 
-    <!-- Hero Section -->
-    <section class="hero">
+    <!-- Hero Section - Enhanced -->
+    <section class="hero hero-parallax">
         <div class="container">
             <div class="hero-content">
                 <div class="hero-image-circle slide-in-left">
@@ -129,16 +129,24 @@ $categories = ['Yoga', 'Meditation', 'Nutrition'];
             </div>
         </div>
     </section>
-    <!-- Latest Blogs Footer Section -->
-    <!-- Latest Blogs Footer Section -->
-<section class="latest-blogs-section">
-    <img src="assets/images/blog-hero-bg.jpg" alt="Blog background" class="page-hero-image" onerror="this.src='assets/images/about-hero.jpg'">
-    <div class="container">
-        <div class="section-header">
-            <h2>Latest Blog Posts</h2>
-            <p>Stay inspired with our latest wellness insights</p>
+
+    <!-- Latest Blog Section - Matching Figma Design -->
+    <section class="latest-blog-section">
+        <!-- Hero Section -->
+        <div class="latest-blog-hero">
+            <img src="assets/images/blog-hero-bg.jpg" alt="Blog background" class="latest-blog-hero-image" onerror="this.src='assets/images/about-hero.jpg'">
+            <div class="latest-blog-hero-content fade-in">
+                <h2 class="latest-blog-title">Latest <span>Blogs</span></h2>
+                <div class="latest-blog-breadcrumb">
+                    <a href="index.php">Home</a>
+                    <span>&gt;&gt;</span>
+                    <span>Blog</span>
+                </div>
+            </div>
         </div>
-        <div class="blog-grid-footer fade-in">
+
+        <!-- Blog Content -->
+        <div class="latest-blog-content">
             <?php
             try {
                 $db = getDB();
@@ -150,67 +158,163 @@ $categories = ['Yoga', 'Meditation', 'Nutrition'];
                     LIMIT 1
                 ");
                 $stmt->execute();
-                $latestPosts = $stmt->fetchAll();
+                $latestPost = $stmt->fetch();
     
-                foreach ($latestPosts as $index => $post):
-                    $preview = strlen($post['content']) > 100 ? substr(strip_tags($post['content']), 0, 100) . '...' : strip_tags($post['content']);
+                if ($latestPost):
+                    $preview = strlen($latestPost['content']) > 300 ? substr(strip_tags($latestPost['content']), 0, 300) . '...' : strip_tags($latestPost['content']);
             ?>
-                <article class="blog-card-small fade-in" style="animation-delay: <?php echo ($index * 0.1); ?>s;">
-                    <div class="blog-card-image">
-                        <?php if (!empty($post['featured_image']) && file_exists($post['featured_image'])): ?>
-                            <img src="<?php echo htmlspecialchars($post['featured_image']); ?>" alt="<?php echo htmlspecialchars($post['title']); ?>" loading="lazy">
+                <div class="blog-post-container fade-in">
+                    <div class="blog-post-text">
+                        <h3 class="blog-post-heading"><?php echo htmlspecialchars($latestPost['title']); ?></h3>
+                        <p class="blog-post-description"><?php echo htmlspecialchars($preview); ?></p>
+                        <a href="view_blog.php?id=<?php echo $latestPost['id']; ?>" class="blog-read-more">
+                            Read More →
+                        </a>
+                    </div>
+                    <div class="blog-post-image">
+                        <?php if (!empty($latestPost['featured_image']) && file_exists($latestPost['featured_image'])): ?>
+                            <img src="<?php echo htmlspecialchars($latestPost['featured_image']); ?>" alt="<?php echo htmlspecialchars($latestPost['title']); ?>" loading="lazy">
                         <?php else: ?>
-                            <img src="/placeholder.svg?height=200&width=400" alt="<?php echo htmlspecialchars($post['title']); ?>" loading="lazy">
+                            <img src="/placeholder.svg?height=500&width=400" alt="<?php echo htmlspecialchars($latestPost['title']); ?>" loading="lazy">
                         <?php endif; ?>
                     </div>
-                    <div class="blog-card-content">
-                        <h3><?php echo htmlspecialchars($post['title']); ?></h3>
-                        <p><?php echo htmlspecialchars($preview); ?></p>
-                        <a href="view_blog.php?id=<?php echo $post['id']; ?>" class="read-more">Read More →</a>
-                    </div>
-                </article>
+                </div>
             <?php 
-                endforeach;
+                else:
+                    echo '<p style="text-align: center; padding: 60px 20px; color: var(--text-light);">No blog posts available yet.</p>';
+                endif;
             } catch (Exception $e) {
-                echo '<p style="color: white; text-align: center;">No blog posts available yet.</p>';
+                echo '<p style="text-align: center; padding: 60px 20px; color: var(--text-light);">Error loading blog posts.</p>';
             }
             ?>
         </div>
-        <div style="text-align: center; margin-top: var(--spacing-xl);">
-            <a href="latest_blogs.php" class="btn btn-primary btn-lg">View All Blogs</a>
-        </div>
-    </div>
-</section>
-    
-
-    
+    </section>
 
     <!-- Footer -->
     <footer class="footer">
         <?php include 'includes/footer.php'; ?>
     </footer>
 
-    <!-- Added scroll animation script -->
-    <script src="assets/css/js/main.js"></script>
+    <!-- Enhanced JavaScript -->
     <script>
-        // Initialize intersection observer for scroll animations
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
+        // ============================================
+        // ENHANCED HERO ANIMATIONS
+        // ============================================
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            
+            // Parallax effect for hero image
+            const heroImageCircle = document.querySelector('.hero-image-circle');
+            const heroText = document.querySelector('.hero-text');
+            const latestBlogsSection = document.querySelector('.latest-blogs-section');
+            
+            if (heroImageCircle && heroText) {
+                window.addEventListener('scroll', function() {
+                    const scrolled = window.pageYOffset;
+                    const rate = scrolled * 0.3;
+                    
+                    heroImageCircle.style.transform = `translateY(${rate * 0.5}px)`;
+                    heroText.style.transform = `translateY(${rate * 0.3}px)`;
+                });
+            }
 
-        const observer = new IntersectionObserver(function(entries) {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                    observer.unobserve(entry.target);
-                }
+            // Smooth scroll reveal
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver(function(entries) {
+                entries.forEach((entry, index) => {
+                    if (entry.isIntersecting) {
+                        setTimeout(() => {
+                            entry.target.style.opacity = '1';
+                            entry.target.style.transform = 'translateY(0)';
+                        }, index * 100);
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('.fade-in, .scale-in, .slide-in-left, .slide-in-right, .blog-card-small').forEach(el => {
+                observer.observe(el);
             });
-        }, observerOptions);
 
-        // Observe all animated elements
-        document.querySelectorAll('.fade-in, .scale-in, .slide-in-left, .slide-in-right').forEach(el => {
-            observer.observe(el);
+            // Magnetic button effect
+            const buttons = document.querySelectorAll('.btn-primary, .btn-secondary');
+            
+            buttons.forEach(button => {
+                button.addEventListener('mousemove', function(e) {
+                    const rect = button.getBoundingClientRect();
+                    const x = e.clientX - rect.left - rect.width / 2;
+                    const y = e.clientY - rect.top - rect.height / 2;
+                    
+                    button.style.transform = `translate(${x * 0.2}px, ${y * 0.2}px) scale(1.05)`;
+                });
+                
+                button.addEventListener('mouseleave', function() {
+                    button.style.transform = 'translate(0, 0) scale(1)';
+                });
+            });
+
+            // Hero text stagger animation
+            const heroElements = document.querySelectorAll('.hero-tagline, .hero-text h1, .hero-description, .hero-text .btn');
+            
+            heroElements.forEach((el, index) => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(30px)';
+                
+                setTimeout(() => {
+                    el.style.transition = 'all 0.8s cubic-bezier(0.4, 0, 0.2, 1)';
+                    el.style.opacity = '1';
+                    el.style.transform = 'translateY(0)';
+                }, 200 + (index * 150));
+            });
+
+            // Blog card hover tilt effect
+            const blogCards = document.querySelectorAll('.blog-card-small');
+            
+            blogCards.forEach(card => {
+                card.addEventListener('mousemove', function(e) {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    
+                    const centerX = rect.width / 2;
+                    const centerY = rect.height / 2;
+                    
+                    const rotateX = (y - centerY) / 20;
+                    const rotateY = (centerX - x) / 20;
+                    
+                    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-15px) scale(1.02)`;
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateY(0) scale(1)';
+                });
+            });
+
+            // Latest Blogs parallax
+            if (latestBlogsSection) {
+                window.addEventListener('scroll', function() {
+                    const scrolled = window.pageYOffset;
+                    const sectionTop = latestBlogsSection.offsetTop;
+                    const sectionHeight = latestBlogsSection.offsetHeight;
+                    
+                    if (scrolled > sectionTop - window.innerHeight && scrolled < sectionTop + sectionHeight) {
+                        const bgImage = latestBlogsSection.querySelector('.page-hero-image');
+                        if (bgImage) {
+                            const rate = (scrolled - sectionTop + window.innerHeight) * 0.3;
+                            bgImage.style.transform = `translateY(${rate}px)`;
+                        }
+                    }
+                });
+            }
+
+            // Page load animation
+            setTimeout(() => {
+                document.body.classList.add('page-loaded');
+            }, 100);
         });
     </script>
 </body>

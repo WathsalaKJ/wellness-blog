@@ -92,7 +92,7 @@ $categories = [
     <img src="assets/images/about-hero.jpg" alt="Wellness background" onerror="this.src='assets/images/about-hero.jpg'">
     <div class="container">
         <div class="breadcrumb-content">
-            <h1 class="page-title">Blog <span>Ctagories</span></h1>
+            <h1 class="page-title">Blog <span>Categories</span></h1>
             <div class="breadcrumb">
                 <a href="index.php">Home</a> <span>&gt;&gt;Categories</span>
             </div>
@@ -108,19 +108,23 @@ $categories = [
             <div class="categories-grid">
                 <?php foreach ($categories as $index => $category): ?>
                     <div class="category-card fade-in" style="animation-delay: <?php echo ($index * 0.1); ?>s;">
+                        <div class="category-content">
                         <div class="category-icon">
                             <img src="assets/images/<?php echo htmlspecialchars($category['icon']); ?>" 
                                  alt="<?php echo htmlspecialchars($category['name']); ?>" 
                                  onerror="this.style.display='none';">
                         </div>
+                        
                         <h3 class="category-title"><?php echo htmlspecialchars($category['name']); ?></h3>
                         <p class="category-description"><?php echo htmlspecialchars($category['description']); ?></p>
                         <p class="category-count">
                             <?php echo $category['count']; ?> <?php echo $category['count'] === 1 ? 'post' : 'posts'; ?>
-                        </p>
+                        </p>        
+                        
                         <a href="category_posts.php?category=<?php echo urlencode($category['name']); ?>" class="category-read-more">
                             Read More <i class="fas fa-arrow-right"></i>
                         </a>
+                        </div>
                     </div>
                 <?php endforeach; ?>
             </div>

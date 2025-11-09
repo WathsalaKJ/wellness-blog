@@ -153,7 +153,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <img src="assets/images/about-hero.jpg" alt="Contact us background">
     <div class="container">
         <div class="contact-hero-content fade-in">
-            <h1>Contact <span class="highlight">us</span></h1>
+            <h1>Contact <span class="highlight">Us</span></h1>
             <div class="contact-breadcrumb">
                 <a href="index.php">Home</a> <span>&gt;&gt;Contact</span> <span>us</span>
             </div>
