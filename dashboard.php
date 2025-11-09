@@ -67,7 +67,7 @@ function formatDate($date) {
             </div>
             <nav class="nav-links">
                 <a href="index.php">Home</a>
-                <a href="index.php">Blog</a>
+                <a href="latest_blogs.php">Blog</a>
                 <a href="categories.php">Categories</a>
                 <a href="about.php">About</a>
                 <a href="contact.php">Contact</a>

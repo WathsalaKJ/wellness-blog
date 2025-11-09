@@ -390,59 +390,70 @@ if (!isLoggedIn) {
             });
         }
         
-        function submitPublicRating(rating) {
-            // Check if already rated
-            if (existingRating) {
-                showRatingMessage('You have already rated this post', true);
-                return;
-            }
-            
-            const formData = new FormData();
-            formData.append('action', 'add_public_rating');
-            formData.append('post_id', postId);
-            formData.append('rating', rating);
-            
-            fetch('api/blog_interactions.php', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    // Store rating in localStorage
-                    localStorage.setItem(userRatingKey, rating);
-                    existingRating = rating;
-                    
-                    // Update star display
-                    updatePublicStarDisplay(rating);
-                    
-                    // Update average rating display in header
-                    const headerStars = document.querySelectorAll('.blog-post-rating-inline .star');
-                    headerStars.forEach((star, index) => {
-                        if (index < Math.round(data.avg_rating)) {
-                            star.classList.add('filled');
-                        } else {
-                            star.classList.remove('filled');
-                        }
-                    });
-                    
-                    const ratingText = document.querySelector('.blog-post-rating-inline .rating-text');
-                    if (ratingText) {
-                        ratingText.textContent = `${data.avg_rating} (${data.total_ratings})`;
-                    }
-                    
-                    showRatingMessage(`Thank you! You rated this post ${rating} stars`, false);
-                    showNotification('Rating submitted successfully!', 'success');
+        function submitRating(rating) {
+    console.log('Submitting rating:', rating);
+    console.log('Post ID:', postId);
+    console.log('Is logged in:', isLoggedIn);
+    
+    const formData = new FormData();
+    formData.append('action', 'add_rating');
+    formData.append('post_id', postId);
+    formData.append('rating', rating);
+
+    fetch('api/blog_interactions.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => {
+        console.log('Response status:', response.status);
+        return response.json();
+    })
+    .then(data => {
+        console.log('Response data:', data);
+        if (data.success) {
+            // Update star selection
+            document.querySelectorAll('.star-input').forEach((star, index) => {
+                if (index < rating) {
+                    star.classList.add('selected');
                 } else {
-                    showRatingMessage(data.message || 'Failed to submit rating', true);
+                    star.classList.remove('selected');
                 }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                showRatingMessage('Failed to submit rating. Please try again.', true);
             });
+
+            // Update rating display in header
+            document.querySelectorAll('.blog-post-rating-inline .star').forEach((star, index) => {
+                if (index < Math.round(data.avg_rating)) {
+                    star.classList.add('filled');
+                } else {
+                    star.classList.remove('filled');
+                }
+            });
+
+            const ratingTextEl = document.querySelector('.blog-post-rating-inline .rating-text');
+            if (ratingTextEl) {
+                ratingTextEl.textContent = `${data.avg_rating} (${data.total_ratings})`;
+            }
+
+            // Show user rating text
+            let userRatingText = document.querySelector('.user-rating-text');
+            if (!userRatingText) {
+                userRatingText = document.createElement('p');
+                userRatingText.className = 'user-rating-text';
+                document.querySelector('.rating-input').appendChild(userRatingText);
+            }
+            userRatingText.textContent = `Your rating: ${rating} stars`;
+
+            showNotification('Rating submitted successfully!', 'success');
+        } else {
+            console.error('Rating failed:', data.message);
+            showNotification(data.message || 'Failed to submit rating', 'error');
         }
-        
+    })
+    .catch(error => {
+        console.error('Fetch error:', error);
+        showNotification('Failed to submit rating', 'error');
+    });
+}
         function updatePublicStarDisplay(rating) {
             ratingStarsPublic.forEach((star, index) => {
                 if (index < rating) {

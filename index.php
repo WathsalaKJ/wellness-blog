@@ -102,92 +102,93 @@ $categories = ['Yoga', 'Meditation', 'Nutrition'];
         </div>
     </div>
 </header>
-
-    <!-- Hero Section - Enhanced -->
-    <section class="hero hero-parallax">
-        <div class="container">
-            <div class="hero-content">
-                <div class="hero-image-circle slide-in-left">
-                    <img src="assets/images/hero-yoga.png" alt="Yoga lifestyle - Group practicing yoga" loading="eager">
-                </div>
-                <div class="hero-text slide-in-right">
-                    <p class="hero-tagline">ELEVATE YOUR WELL BEING</p>
-                    <h1>start a healthy way of life, today!</h1>
-                    <p class="hero-description">We believe in the strength of connection; connection with your physical self and connection to the greater world.</p>
-                    <a href="<?php echo isset($_SESSION['user_id']) ? 'dashboard.php' : 'register.php'; ?>" class="btn btn-primary btn-lg">Get Started</a>
-                </div>
+<!-- Enhanced Hero Section -->
+<section class="hero hero-parallax">
+    <div class="container">
+        <div class="hero-content">
+            <div class="hero-image-circle slide-in-left">
+                <img src="assets/images/hero-yoga.png" alt="Yoga lifestyle - Group practicing yoga" loading="eager">
             </div>
-            
-            <!-- Testimonial Quote -->
-            <div class="hero-testimonial fade-in">
-                <div class="testimonial-avatar">
-                    <img src="assets/images/testimonial-avatar.png" alt="Testimonial" loading="lazy">
-                </div>
-                <blockquote>
-                    <p>"Find harmony in body and mind with our yoga and fitness workshop."</p>
-                </blockquote>
+            <div class="hero-text slide-in-right">
+                <p class="hero-tagline">ELEVATE YOUR WELL BEING</p>
+                <h1>start a healthy way of life, today!</h1>
+                <p class="hero-description">We believe in the strength of connection; connection with your physical self and connection to the greater world.</p>
+                <a href="<?php echo isset($_SESSION['user_id']) ? 'dashboard.php' : 'register.php'; ?>" class="btn btn-primary">Get Started</a>
             </div>
         </div>
-    </section>
+        
+        <!-- Testimonial Quote - Outside Box -->
+        <div class="hero-testimonial fade-in">
+            <div class="testimonial-avatar">
+                <img src="assets/images/testimonial-avatar.png" alt="Testimonial" loading="lazy">
+            </div>
+            <blockquote>
+                <p>"Find harmony in body and mind with our yoga and fitness workshop."</p>
+            </blockquote>
+        </div>
+    </div>
+</section>
 
-    <!-- Latest Blog Section - Matching Figma Design -->
-    <section class="latest-blog-section">
-        <!-- Hero Section -->
-        <div class="latest-blog-hero">
-            <img src="assets/images/blog-hero-bg.jpg" alt="Blog background" class="latest-blog-hero-image" onerror="this.src='assets/images/about-hero.jpg'">
-            <div class="latest-blog-hero-content fade-in">
-                <h2 class="latest-blog-title">Latest <span>Blogs</span></h2>
-                <div class="latest-blog-breadcrumb">
-                    <a href="index.php">Home</a>
-                    <span>&gt;&gt;</span>
-                    <span>Blog</span>
-                </div>
+<!-- Latest Blog Section with Hero and Box -->
+<section class="latest-blog-section">
+    <!-- Hero Section -->
+    <div class="latest-blog-hero">
+        <img src="assets/images/blog-hero-bg.jpg" alt="Blog background" class="latest-blog-hero-image" onerror="this.src='assets/images/about-hero.jpg'">
+        <div class="latest-blog-hero-content fade-in">
+            <h2 class="latest-blog-title">Featured <span>Blog</span></h2>
+            <div class="latest-blog-breadcrumb">
+                <a href="index.php">Home</a>
+                <span>&gt;&gt;</span>
+                <span>Blog</span>
             </div>
         </div>
+    </div>
 
-        <!-- Blog Content -->
-        <div class="latest-blog-content">
-            <?php
-            try {
-                $db = getDB();
-                $stmt = $db->prepare("
-                    SELECT bp.id, bp.title, bp.content, bp.featured_image, bp.created_at, u.username
-                    FROM blogPost bp
-                    JOIN user u ON bp.user_id = u.id
-                    ORDER BY bp.created_at DESC
-                    LIMIT 1
-                ");
-                $stmt->execute();
-                $latestPost = $stmt->fetch();
-    
-                if ($latestPost):
-                    $preview = strlen($latestPost['content']) > 300 ? substr(strip_tags($latestPost['content']), 0, 300) . '...' : strip_tags($latestPost['content']);
-            ?>
-                <div class="blog-post-container fade-in">
-                    <div class="blog-post-text">
-                        <h3 class="blog-post-heading"><?php echo htmlspecialchars($latestPost['title']); ?></h3>
-                        <p class="blog-post-description"><?php echo htmlspecialchars($preview); ?></p>
-                        <a href="view_blog.php?id=<?php echo $latestPost['id']; ?>" class="blog-read-more">
-                            Read More →
-                        </a>
-                    </div>
-                    <div class="blog-post-image">
-                        <?php if (!empty($latestPost['featured_image']) && file_exists($latestPost['featured_image'])): ?>
-                            <img src="<?php echo htmlspecialchars($latestPost['featured_image']); ?>" alt="<?php echo htmlspecialchars($latestPost['title']); ?>" loading="lazy">
-                        <?php else: ?>
-                            <img src="/placeholder.svg?height=500&width=400" alt="<?php echo htmlspecialchars($latestPost['title']); ?>" loading="lazy">
-                        <?php endif; ?>
-                    </div>
-                </div>
-            <?php 
-                else:
-                    echo '<p style="text-align: center; padding: 60px 20px; color: var(--text-light);">No blog posts available yet.</p>';
-                endif;
-            } catch (Exception $e) {
-                echo '<p style="text-align: center; padding: 60px 20px; color: var(--text-light);">Error loading blog posts.</p>';
-            }
-            ?>
-        </div>
+    <!-- Blog Content -->
+    <div class="latest-blog-content">
+        <?php
+        try {
+            $db = getDB();
+            $stmt = $db->prepare("
+                SELECT bp.id, bp.title, bp.content, bp.featured_image, bp.created_at, u.username
+                FROM blogPost bp
+                JOIN user u ON bp.user_id = u.id
+                ORDER BY bp.created_at DESC
+                LIMIT 1
+            ");
+            $stmt->execute();
+            $latestPost = $stmt->fetch();
+
+            if ($latestPost):
+                $preview = strlen($latestPost['content']) > 300 ? substr(strip_tags($latestPost['content']), 0, 300) . '...' : strip_tags($latestPost['content']);
+        ?>
+            <div class="blog-post-container fade-in">
+    <div class="blog-post-text">
+        <h3 class="blog-post-heading"><?php echo htmlspecialchars($latestPost['title']); ?></h3>
+        <p class="blog-post-description"><?php echo htmlspecialchars($preview); ?></p>
+        <a href="view_blog.php?id=<?php echo $latestPost['id']; ?>" class="blog-read-more">
+            Read More →
+        </a>
+    </div>
+    <div class="blog-post-image">
+        <?php if (!empty($latestPost['featured_image']) && file_exists($latestPost['featured_image'])): ?>
+            <img src="<?php echo htmlspecialchars($latestPost['featured_image']); ?>" alt="<?php echo htmlspecialchars($latestPost['title']); ?>" loading="lazy">
+        <?php else: ?>
+            <img src="assets/images/blog-hero-bg.jpg" alt="<?php echo htmlspecialchars($latestPost['title']); ?>" loading="lazy">
+        <?php endif; ?>
+    </div>
+</div>
+            </div>
+        <?php 
+            else:
+                echo '<p style="text-align: center; padding: 60px 20px; color: #ffffff;">No blog posts available yet.</p>';
+            endif;
+        } catch (Exception $e) {
+            echo '<p style="text-align: center; padding: 60px 20px; color: #ffffff;">Error loading blog posts.</p>';
+        }
+        ?>
+    </div>
+</section>
     </section>
 
     <!-- Footer -->
@@ -197,9 +198,9 @@ $categories = ['Yoga', 'Meditation', 'Nutrition'];
 
     <!-- Enhanced JavaScript -->
     <script>
-        // ============================================
+        
         // ENHANCED HERO ANIMATIONS
-        // ============================================
+
         
         document.addEventListener('DOMContentLoaded', function() {
             

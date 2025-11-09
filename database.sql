@@ -60,34 +60,30 @@ CREATE TABLE IF NOT EXISTS contact_messages (
 -- ============================================
 -- BLOG RATINGS TABLE
 -- ============================================
-CREATE TABLE IF NOT EXISTS blog_ratings (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    blog_post_id INT NOT NULL,
-    user_id INT NOT NULL,
-    rating TINYINT NOT NULL CHECK (rating >= 1 AND rating <= 5),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (blog_post_id) REFERENCES blogPost(id) ON DELETE CASCADE,
-    FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE,
-    UNIQUE KEY unique_user_rating (blog_post_id, user_id),
-    INDEX idx_blog_post (blog_post_id),
-    INDEX idx_user (user_id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+-- Create blog_ratings table if not exists
+CREATE TABLE IF NOT EXISTS `blog_ratings` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `blog_post_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `rating` int(11) NOT NULL CHECK (`rating` >= 1 AND `rating` <= 5),
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_user_post_rating` (`blog_post_id`, `user_id`),
+  KEY `blog_post_id` (`blog_post_id`),
+  KEY `user_id` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- ============================================
--- BLOG PUBLIC RATINGS TABLE (for non-logged-in users)
--- ============================================
-CREATE TABLE IF NOT EXISTS blog_ratings_public (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    blog_post_id INT NOT NULL,
-    ip_address VARCHAR(45) NOT NULL,
-    rating TINYINT NOT NULL CHECK (rating >= 1 AND rating <= 5),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (blog_post_id) REFERENCES blogPost(id) ON DELETE CASCADE,
-    UNIQUE KEY unique_ip_rating (blog_post_id, ip_address),
-    INDEX idx_blog_post (blog_post_id),
-    INDEX idx_ip_address (ip_address)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+-- Create blog_ratings_public table if not exists
+CREATE TABLE IF NOT EXISTS `blog_ratings_public` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `blog_post_id` int(11) NOT NULL,
+  `rating` int(11) NOT NULL CHECK (`rating` >= 1 AND `rating` <= 5),
+  `ip_address` varchar(45) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_ip_post_rating` (`blog_post_id`, `ip_address`),
+  KEY `blog_post_id` (`blog_post_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 -- ============================================
 -- BLOG COMMENTS TABLE
 -- ============================================
