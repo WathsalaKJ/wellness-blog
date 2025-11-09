@@ -1,5 +1,10 @@
 # Environment variables - NEVER commit this!
+
 .env
+   /uploads/*
+   !uploads/.gitkeep
+   *.log
+   /logs/
 
 # IDE files
 .vscode/

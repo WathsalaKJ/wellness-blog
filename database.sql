@@ -1,6 +1,13 @@
-CREATE DATABASE IF NOT EXISTS soulbalance_blog;
-USE soulbalance_blog;
+-- ============================================
+-- SoulBalance Blog Database Schema
+-- FOR INFINITYFREE HOSTING
+-- ============================================
+-- Note: Database already created via control panel
+-- This script only creates tables
 
+-- ============================================
+-- USER TABLE
+-- ============================================
 CREATE TABLE IF NOT EXISTS user (
     id INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(50) NOT NULL UNIQUE,
@@ -14,7 +21,7 @@ CREATE TABLE IF NOT EXISTS user (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================
--- BLOG POST TABLE (ENHANCED)
+-- BLOG POST TABLE
 -- ============================================
 CREATE TABLE IF NOT EXISTS blogPost (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -32,9 +39,8 @@ CREATE TABLE IF NOT EXISTS blogPost (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================
--- Contact Messages Table Schema
+-- CONTACT MESSAGES TABLE
 -- ============================================
-
 CREATE TABLE IF NOT EXISTS contact_messages (
     id INT(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     first_name VARCHAR(50) NOT NULL,
@@ -50,7 +56,6 @@ CREATE TABLE IF NOT EXISTS contact_messages (
     replied_at DATETIME DEFAULT NULL,
     replied_by INT(11) DEFAULT NULL,
     notes TEXT DEFAULT NULL,
-    
     INDEX idx_email (email),
     INDEX idx_status (status),
     INDEX idx_created_at (created_at),
@@ -58,32 +63,37 @@ CREATE TABLE IF NOT EXISTS contact_messages (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================
--- BLOG RATINGS TABLE
+-- BLOG RATINGS TABLE (User Ratings)
 -- ============================================
--- Create blog_ratings table if not exists
-CREATE TABLE IF NOT EXISTS `blog_ratings` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `blog_post_id` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL,
-  `rating` int(11) NOT NULL CHECK (`rating` >= 1 AND `rating` <= 5),
-  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `unique_user_post_rating` (`blog_post_id`, `user_id`),
-  KEY `blog_post_id` (`blog_post_id`),
-  KEY `user_id` (`user_id`)
+CREATE TABLE IF NOT EXISTS blog_ratings (
+    id INT(11) NOT NULL AUTO_INCREMENT,
+    blog_post_id INT(11) NOT NULL,
+    user_id INT(11) NOT NULL,
+    rating INT(11) NOT NULL CHECK (rating >= 1 AND rating <= 5),
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    UNIQUE KEY unique_user_post_rating (blog_post_id, user_id),
+    KEY blog_post_id (blog_post_id),
+    KEY user_id (user_id),
+    FOREIGN KEY (blog_post_id) REFERENCES blogPost(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Create blog_ratings_public table if not exists
-CREATE TABLE IF NOT EXISTS `blog_ratings_public` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `blog_post_id` int(11) NOT NULL,
-  `rating` int(11) NOT NULL CHECK (`rating` >= 1 AND `rating` <= 5),
-  `ip_address` varchar(45) NOT NULL,
-  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `unique_ip_post_rating` (`blog_post_id`, `ip_address`),
-  KEY `blog_post_id` (`blog_post_id`)
+-- ============================================
+-- BLOG RATINGS PUBLIC TABLE (Anonymous Ratings)
+-- ============================================
+CREATE TABLE IF NOT EXISTS blog_ratings_public (
+    id INT(11) NOT NULL AUTO_INCREMENT,
+    blog_post_id INT(11) NOT NULL,
+    rating INT(11) NOT NULL CHECK (rating >= 1 AND rating <= 5),
+    ip_address VARCHAR(45) NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    UNIQUE KEY unique_ip_post_rating (blog_post_id, ip_address),
+    KEY blog_post_id (blog_post_id),
+    FOREIGN KEY (blog_post_id) REFERENCES blogPost(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 -- ============================================
 -- BLOG COMMENTS TABLE
 -- ============================================
@@ -102,93 +112,6 @@ CREATE TABLE IF NOT EXISTS blog_comments (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================
--- Sample Query to View Recent Messages
+-- VERIFICATION MESSAGE
 -- ============================================
-
--- View all new messages
-SELECT 
-    id,
-    CONCAT(first_name, ' ', last_name) as full_name,
-    email,
-    phone,
-    subject,
-    LEFT(message, 100) as message_preview,
-    created_at
-FROM contact_messages 
-WHERE status = 'new'
-ORDER BY created_at DESC;
-
--- View all messages from a specific email
-SELECT * FROM contact_messages 
-WHERE email = 'example@email.com'
-ORDER BY created_at DESC;
-
--- Count messages by status
-SELECT 
-    status,
-    COUNT(*) as count
-FROM contact_messages
-GROUP BY status;
-
--- ============================================
--- Admin Functions (Optional)
--- ============================================
-
--- Mark message as read
--- UPDATE contact_messages SET status = 'read', updated_at = NOW() WHERE id = ?;
-
--- Mark message as replied
--- UPDATE contact_messages SET status = 'replied', replied_at = NOW(), replied_by = ? WHERE id = ?;
-
--- Add admin notes to a message
--- UPDATE contact_messages SET notes = ? WHERE id = ?;
-
--- Archive old messages (older than 6 months)
--- UPDATE contact_messages SET status = 'archived' WHERE created_at < DATE_SUB(NOW(), INTERVAL 6 MONTH) AND status != 'new';
-
--- ============================================
--- Performance Indexes
--- ============================================
-
--- Additional indexes for better query performance
--- CREATE INDEX idx_full_name ON contact_messages(first_name, last_name);
--- CREATE INDEX idx_created_status ON contact_messages(created_at, status);
-
--- ============================================
--- SAMPLE DATA (for testing)
--- Password for all test accounts: password123
--- ============================================
-
-
-
-
--- ============================================
--- CREATE UPLOADS DIRECTORY STRUCTURE
--- Note: These directories must be created manually
--- ============================================
-
--- uploads/
--- └── blogs/
---     └── .gitkeep
-
--- Make sure to set proper permissions:
--- chmod 755 uploads/blogs/
-
--- ============================================
--- VERIFICATION QUERIES
--- ============================================
-
--- Check if tables were created
--- SHOW TABLES;
-
--- View sample data
--- SELECT u.username, COUNT(bp.id) as post_count 
--- FROM user u 
--- LEFT JOIN blogPost bp ON u.id = bp.user_id 
--- GROUP BY u.id;
-
--- View all blog posts
--- SELECT bp.title, u.username, bp.category, bp.created_at 
--- FROM blogPost bp 
--- JOIN user u ON bp.user_id = u.id 
--- ORDER BY bp.created_at DESC;
+SELECT 'Database tables created successfully!' as Status;

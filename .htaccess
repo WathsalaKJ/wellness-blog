@@ -1,0 +1,24 @@
+# Redirect to HTTPS
+   RewriteEngine On
+   RewriteCond %{HTTPS} off
+   RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+   
+   # Hide .php extension
+   RewriteCond %{REQUEST_FILENAME} !-d
+   RewriteCond %{REQUEST_FILENAME}\.php -f
+   RewriteRule ^(.*)$ $1.php [NC,L]
+   
+   # Prevent directory browsing
+   Options -Indexes
+   
+   # Protect sensitive files
+   <FilesMatch "^\.env$">
+     Order allow,deny
+     Deny from all
+   </FilesMatch>
+   
+   # Set upload limits
+   php_value upload_max_filesize 10M
+   php_value post_max_size 10M
+   php_value max_execution_time 300
+   php_value max_input_time 300
