@@ -32,26 +32,25 @@ try {
         exit();
     }
 
-    // Get average rating and total ratings
+    // Get average rating and total ratings (combined user and public ratings)
     $stmt = $db->prepare("
-        SELECT AVG(rating) as avg_rating, COUNT(*) as total_ratings 
-        FROM blog_ratings 
-        WHERE blog_post_id = ?
+        SELECT 
+            (SELECT AVG(rating) FROM blog_ratings WHERE blog_post_id = ?) as user_avg,
+            (SELECT COUNT(*) FROM blog_ratings WHERE blog_post_id = ?) as user_count,
+            (SELECT AVG(rating) FROM blog_ratings_public WHERE blog_post_id = ?) as public_avg,
+            (SELECT COUNT(*) FROM blog_ratings_public WHERE blog_post_id = ?) as public_count
     ");
-    $stmt->execute([$postId]);
+    $stmt->execute([$postId, $postId, $postId, $postId]);
     $ratingData = $stmt->fetch();
-    $avgRating = $ratingData['avg_rating'] ? round($ratingData['avg_rating'], 1) : 0;
-    $totalRatings = $ratingData['total_ratings'];
-
-    // Get user's rating if logged in
-    $userRating = 0;
-    if (isset($_SESSION['user_id'])) {
-        $stmt = $db->prepare("SELECT rating FROM blog_ratings WHERE blog_post_id = ? AND user_id = ?");
-        $stmt->execute([$postId, $_SESSION['user_id']]);
-        $userRatingData = $stmt->fetch();
-        $userRating = $userRatingData ? $userRatingData['rating'] : 0;
+    
+    $totalRatings = ($ratingData['user_count'] ?? 0) + ($ratingData['public_count'] ?? 0);
+    $avgRating = 0;
+    
+    if ($totalRatings > 0) {
+        $userSum = ($ratingData['user_avg'] ?? 0) * ($ratingData['user_count'] ?? 0);
+        $publicSum = ($ratingData['public_avg'] ?? 0) * ($ratingData['public_count'] ?? 0);
+        $avgRating = round(($userSum + $publicSum) / $totalRatings, 1);
     }
-
     // Get comments
     $stmt = $db->prepare("
         SELECT c.id, c.comment, c.created_at, c.user_id, u.username 
@@ -161,101 +160,122 @@ function getAvatarColor($username) {
     </div>
 </section>
 
-    <!-- Main Content -->
-    <main class="main-content">
-        <div class="container">
-            <!-- Featured Image -->
-            <?php if (!empty($post['featured_image']) && file_exists($post['featured_image'])): ?>
-                <div class="blog-featured-image fade-in">
-                    <img src="<?php echo htmlspecialchars($post['featured_image']); ?>" alt="<?php echo htmlspecialchars($post['title']); ?>" loading="lazy">
-                </div>
-            <?php endif; ?>
-
-            <article class="blog-post fade-in">
-                <div class="blog-header">
-                    <?php if (!empty($post['category'])): ?>
-                        <span class="category-badge" style="margin-bottom: var(--spacing-sm);">
-                            <?php echo htmlspecialchars($post['category']); ?>
-                        </span>
-                    <?php endif; ?>
-                    
-                    <h1><?php echo htmlspecialchars($post['title']); ?></h1>
+   <!-- Main Content -->
+<main class="main-content">
+    <div class="container">
+        <div class ="blog-post-container">
+        <article class="blog-post fade-in">
+            <!-- Enhanced Header Box -->
+            <div class="blog-post-header-box">
+               <h1><?php echo htmlspecialchars($post['title']); ?></h1>
+                
+                <!-- Meta Information Row -->
+                <div class="blog-post-meta-row">
+                    <!-- Author -->
+                    <div class="blog-post-author-inline">
+                        <div class="author-avatar" style="background-color: <?php echo getAvatarColor($post['username']); ?>;">
+                            <?php echo strtoupper(substr($post['username'], 0, 1)); ?>
+                        </div>
+                        <strong><?php echo htmlspecialchars($post['username']); ?></strong>
+                    </div>
                     
                     <!-- Rating Display -->
-                    <div class="blog-rating-display" style="margin: var(--spacing-md) 0;">
+                    <div class="blog-post-rating-inline">
                         <div class="rating-stars">
                             <?php for ($i = 1; $i <= 5; $i++): ?>
                                 <span class="star <?php echo $i <= $avgRating ? 'filled' : ''; ?>">★</span>
                             <?php endfor; ?>
                         </div>
                         <span class="rating-text">
-                            <?php echo $avgRating > 0 ? $avgRating : 'No ratings yet'; ?>
+                            <?php echo $avgRating > 0 ? $avgRating : 'No ratings'; ?>
                             <?php if ($totalRatings > 0): ?>
-                                (<?php echo $totalRatings; ?> <?php echo $totalRatings === 1 ? 'rating' : 'ratings'; ?>)
+                                (<?php echo $totalRatings; ?>)
                             <?php endif; ?>
                         </span>
                     </div>
                     
-                    <div class="blog-author-meta">
-                        <div class="author-info">
-                            <div class="author-avatar" style="background-color: <?php echo getAvatarColor($post['username']); ?>;">
-                                <?php echo strtoupper(substr($post['username'], 0, 1)); ?>
-                            </div>
-                            <div>
-                                <strong><?php echo htmlspecialchars($post['username']); ?></strong>
-                                <p>Author</p>
-                            </div>
-                        </div>
-                        <div class="blog-meta">
-                            <span><?php echo formatDate($post['created_at']); ?></span>
-                            <?php if ($post['created_at'] !== $post['updated_at']): ?>
-                                <span>(Updated: <?php echo formatDate($post['updated_at']); ?>)</span>
-                            <?php endif; ?>
-                        </div>
+                    <!-- Date -->
+                    <div class="blog-post-date-inline">
+                        <?php echo formatDate($post['created_at']); ?>
                     </div>
                 </div>
+            </div>
+            
+            <!-- Content with Image After First Paragraph -->
+            <div class="blog-content-with-image">
+                <?php 
+                // Split content into paragraphs
+                $content = $post['content'];
+                $allowedTags = '<p><br><strong><b><em><i><u><h1><h2><h3><h4><ul><ol><li><a><blockquote><code><pre><div>';
+                $cleanContent = strip_tags($content, $allowedTags);
                 
-                <div class="blog-content">
-                    <?php 
-                    // Render HTML content properly
-                    $content = $post['content'];
-                    
-                    // Security: Allow only safe HTML tags
-                    $allowedTags = '<p><br><strong><b><em><i><u><h1><h2><h3><h4><ul><ol><li><a><blockquote><code><pre><div>';
-                    $cleanContent = strip_tags($content, $allowedTags);
-                    
-                    // Output the HTML content
-                    echo $cleanContent;
-                    ?>
+                // Extract first paragraph
+                preg_match('/<p[^>]*>.*?<\/p>/s', $cleanContent, $firstParagraph);
+                $firstPara = !empty($firstParagraph[0]) ? $firstParagraph[0] : '';
+                $remainingContent = $firstPara ? str_replace($firstPara, '', $cleanContent) : $cleanContent;
+                ?>
+                
+                <!-- First Paragraph -->
+                <?php if ($firstPara): ?>
+                    <div class="blog-content-first-paragraph">
+                        <?php echo $firstPara; ?>
+                    </div>
+                <?php endif; ?>
+                
+                <!-- Featured Image After First Paragraph -->
+                <?php if (!empty($post['featured_image']) && file_exists($post['featured_image'])): ?>
+                    <div class="blog-content-image">
+                        <img src="<?php echo htmlspecialchars($post['featured_image']); ?>" alt="<?php echo htmlspecialchars($post['title']); ?>" loading="lazy">
+                    </div>
+                <?php endif; ?>
+                
+                <!-- Remaining Content -->
+                <div class="blog-content-remaining blog-content">
+                    <?php echo $remainingContent; ?>
                 </div>
-                <?php if ($isOwner): ?>
-                    <div class="blog-actions">
-                        <a href="edit_blog.php?id=<?php echo $post['id']; ?>" class="btn btn-secondary">✏️ Edit Post</a>
-                        <a href="delete_blog.php?id=<?php echo $post['id']; ?>" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this post?');">🗑️ Delete Post</a>
-                    </div>
-                <?php endif; ?>
-            </article>
+            </div>
+            
+            <?php if ($isOwner): ?>
+                <div class="blog-actions">
+                    <a href="edit_blog.php?id=<?php echo $post['id']; ?>" class="btn btn-secondary">✏️ Edit Post</a>
+                    <a href="delete_blog.php?id=<?php echo $post['id']; ?>" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this post?');">🗑️ Delete Post</a>
+                </div>
+            <?php endif; ?>
+        </article>
+        <div>
 
-            <!-- Rating Section -->
-            <section class="rating-section fade-in">
-                <h3>Rate this Post</h3>
-                <?php if (isset($_SESSION['user_id'])): ?>
-                    <div class="rating-input">
-                        <p>Click on a star to rate (1-5)</p>
-                        <div class="rating-stars-input" id="ratingStars">
-                            <?php for ($i = 1; $i <= 5; $i++): ?>
-                                <span class="star-input <?php echo $i <= $userRating ? 'selected' : ''; ?>" data-rating="<?php echo $i; ?>">★</span>
-                            <?php endfor; ?>
-                        </div>
-                        <?php if ($userRating > 0): ?>
-                            <p class="user-rating-text">Your rating: <?php echo $userRating; ?> stars</p>
-                        <?php endif; ?>
+        <!-- Rating Section -->
+        <section class="rating-section fade-in">
+            <h3>Rate this Post</h3>
+            <?php if (isset($_SESSION['user_id'])): ?>
+                <!-- Logged-in User Rating -->
+                <div class="rating-input">
+                    <p>Click on a star to rate (1-5)</p>
+                    <div class="rating-stars-input" id="ratingStars">
+                        <?php for ($i = 1; $i <= 5; $i++): ?>
+                            <span class="star-input <?php echo $i <= $userRating ? 'selected' : ''; ?>" data-rating="<?php echo $i; ?>">★</span>
+                        <?php endfor; ?>
                     </div>
-                <?php else: ?>
-                    <p><a href="login.php" class="btn btn-primary btn-sm">Login to rate this post</a></p>
-                <?php endif; ?>
-            </section>
+                    <?php if ($userRating > 0): ?>
+                        <p class="user-rating-text">Your rating: <?php echo $userRating; ?> stars</p>
+                    <?php endif; ?>
+                </div>
+            <?php else: ?>
+                <!-- Public Rating (Not Logged In) -->
+                <div class="rating-public">
+                    
+                    <p>Click on a star to rate (1-5)</p>
+                    <div class="rating-stars-public" id="ratingStarsPublic">
+                        <?php for ($i = 1; $i <= 5; $i++): ?>
+                            <span class="star-public" data-rating="<?php echo $i; ?>">★</span>
+                        <?php endfor; ?>
+                    </div>
+                    <div class="rating-message" id="ratingMessage"></div>
+                </div>
+            <?php endif; ?>
+        </section>
 
+       
             <!-- Comments Section -->
             <section class="comments-section fade-in">
                 <h3>Comments (<?php echo count($comments); ?>)</h3>
@@ -326,21 +346,34 @@ function getAvatarColor($username) {
         const postId = <?php echo $postId; ?>;
         const isLoggedIn = <?php echo isset($_SESSION['user_id']) ? 'true' : 'false'; ?>;
 
-        // Rating functionality
+// Rating functionality
         document.querySelectorAll('.star-input').forEach(star => {
             star.addEventListener('click', function() {
-                if (!isLoggedIn) {
-                    alert('Please login to rate this post');
-                    return;
-                }
-
+                // Public Rating functionality (for non-logged-in users)
+// Public Rating functionality (for non-logged-in users) - FIXED
+if (!isLoggedIn) {
+    const ratingStarsPublic = document.querySelectorAll('.star-public');
+    const ratingMessage = document.getElementById('ratingMessage');
+    
+    if (ratingStarsPublic.length > 0 && ratingMessage) {
+        // Check if user has already rated (stored in localStorage)
+        const userRatingKey = `blog_${postId}_rating`;
+        let existingRating = localStorage.getItem(userRatingKey);
+        
+        if (existingRating) {
+            updatePublicStarDisplay(parseInt(existingRating));
+            showRatingMessage(`You rated this post ${existingRating} stars`, false);
+        }
+        
+        ratingStarsPublic.forEach(star => {
+            star.addEventListener('click', function() {
                 const rating = parseInt(this.dataset.rating);
-                submitRating(rating);
+                submitPublicRating(rating);
             });
-
+            
             star.addEventListener('mouseenter', function() {
                 const rating = parseInt(this.dataset.rating);
-                document.querySelectorAll('.star-input').forEach((s, index) => {
+                ratingStarsPublic.forEach((s, index) => {
                     if (index < rating) {
                         s.classList.add('hover');
                     } else {
@@ -349,17 +382,26 @@ function getAvatarColor($username) {
                 });
             });
         });
-
-        document.getElementById('ratingStars')?.addEventListener('mouseleave', function() {
-            document.querySelectorAll('.star-input').forEach(s => s.classList.remove('hover'));
-        });
-
-        function submitRating(rating) {
+        
+        const ratingContainer = document.getElementById('ratingStarsPublic');
+        if (ratingContainer) {
+            ratingContainer.addEventListener('mouseleave', function() {
+                ratingStarsPublic.forEach(s => s.classList.remove('hover'));
+            });
+        }
+        
+        function submitPublicRating(rating) {
+            // Check if already rated
+            if (existingRating) {
+                showRatingMessage('You have already rated this post', true);
+                return;
+            }
+            
             const formData = new FormData();
-            formData.append('action', 'add_rating');
+            formData.append('action', 'add_public_rating');
             formData.append('post_id', postId);
             formData.append('rating', rating);
-
+            
             fetch('api/blog_interactions.php', {
                 method: 'POST',
                 body: formData
@@ -367,151 +409,67 @@ function getAvatarColor($username) {
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    // Update star selection
-                    document.querySelectorAll('.star-input').forEach((star, index) => {
-                        if (index < rating) {
-                            star.classList.add('selected');
-                        } else {
-                            star.classList.remove('selected');
-                        }
-                    });
-
-                    // Update rating display
-                    document.querySelectorAll('.rating-stars .star').forEach((star, index) => {
+                    // Store rating in localStorage
+                    localStorage.setItem(userRatingKey, rating);
+                    existingRating = rating;
+                    
+                    // Update star display
+                    updatePublicStarDisplay(rating);
+                    
+                    // Update average rating display in header
+                    const headerStars = document.querySelectorAll('.blog-post-rating-inline .star');
+                    headerStars.forEach((star, index) => {
                         if (index < Math.round(data.avg_rating)) {
                             star.classList.add('filled');
                         } else {
                             star.classList.remove('filled');
                         }
                     });
-
-                    document.querySelector('.rating-text').textContent = 
-                        `${data.avg_rating} (${data.total_ratings} ${data.total_ratings === 1 ? 'rating' : 'ratings'})`;
-
-                    // Show user rating text
-                    let userRatingText = document.querySelector('.user-rating-text');
-                    if (!userRatingText) {
-                        userRatingText = document.createElement('p');
-                        userRatingText.className = 'user-rating-text';
-                        document.querySelector('.rating-input').appendChild(userRatingText);
+                    
+                    const ratingText = document.querySelector('.blog-post-rating-inline .rating-text');
+                    if (ratingText) {
+                        ratingText.textContent = `${data.avg_rating} (${data.total_ratings})`;
                     }
-                    userRatingText.textContent = `Your rating: ${rating} stars`;
-
+                    
+                    showRatingMessage(`Thank you! You rated this post ${rating} stars`, false);
                     showNotification('Rating submitted successfully!', 'success');
                 } else {
-                    showNotification(data.message, 'error');
+                    showRatingMessage(data.message || 'Failed to submit rating', true);
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                showNotification('Failed to submit rating', 'error');
+                showRatingMessage('Failed to submit rating. Please try again.', true);
             });
         }
-
-        const ratingStarsPublic = document.querySelectorAll('.star-public');
-const ratingMessage = document.getElementById('ratingMessage');
-
-// Check if user has already rated (stored in localStorage)
-const userRatingKey = `blog_${postId}_rating`;
-const existingRating = localStorage.getItem(userRatingKey);
-
-if (existingRating) {
-    updateStarDisplay(parseInt(existingRating));
-    showRatingMessage(`You rated this post ${existingRating} stars`, false);
-}
-
-ratingStarsPublic.forEach(star => {
-    star.addEventListener('click', function() {
-        const rating = parseInt(this.dataset.rating);
-        submitPublicRating(rating);
-    });
-
-    star.addEventListener('mouseenter', function() {
-        const rating = parseInt(this.dataset.rating);
-        ratingStarsPublic.forEach((s, index) => {
-            if (index < rating) {
-                s.classList.add('hover');
-            } else {
-                s.classList.remove('hover');
-            }
-        });
-    });
-});
-
-document.getElementById('ratingStarsPublic')?.addEventListener('mouseleave', function() {
-    ratingStarsPublic.forEach(s => s.classList.remove('hover'));
-});
-
-function submitPublicRating(rating) {
-    // Check if already rated
-    if (existingRating) {
-        showRatingMessage('You have already rated this post', true);
-        return;
-    }
-
-    const formData = new FormData();
-    formData.append('action', 'add_public_rating');
-    formData.append('post_id', postId);
-    formData.append('rating', rating);
-
-    fetch('api/blog_interactions.php', {
-        method: 'POST',
-        body: formData
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            // Store rating in localStorage
-            localStorage.setItem(userRatingKey, rating);
-            
-            // Update star display
-            updateStarDisplay(rating);
-            
-            // Update average rating display
-            document.querySelectorAll('.rating-stars .star, .rating-stars-public .star-public').forEach((star, index) => {
-                if (index < Math.round(data.avg_rating)) {
-                    star.classList.add('filled');
+        
+        function updatePublicStarDisplay(rating) {
+            ratingStarsPublic.forEach((star, index) => {
+                if (index < rating) {
                     star.classList.add('selected');
                 } else {
-                    star.classList.remove('filled');
                     star.classList.remove('selected');
                 }
             });
-
-            document.querySelector('.rating-text').textContent = 
-                `${data.avg_rating} (${data.total_ratings} ${data.total_ratings === 1 ? 'rating' : 'ratings'})`;
-
-            showRatingMessage(`Thank you! You rated this post ${rating} stars`, false);
-            showNotification('Rating submitted successfully!', 'success');
-        } else {
-            showRatingMessage(data.message, true);
         }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        showRatingMessage('Failed to submit rating', true);
-    });
-}
-
-function updateStarDisplay(rating) {
-    ratingStarsPublic.forEach((star, index) => {
-        if (index < rating) {
-            star.classList.add('selected');
-        } else {
-            star.classList.remove('selected');
+        
+        function showRatingMessage(message, isError) {
+            if (ratingMessage) {
+                ratingMessage.textContent = message;
+                ratingMessage.style.display = 'block';
+                ratingMessage.style.color = isError ? 'var(--danger)' : 'var(--primary)';
+                
+                setTimeout(() => {
+                    ratingMessage.style.display = 'none';
+                }, 5000);
+            }
         }
-    });
+    }
 }
 
-function showRatingMessage(message, isError) {
-    ratingMessage.textContent = message;
-    ratingMessage.style.display = 'block';
-    ratingMessage.style.color = isError ? 'var(--danger)' : 'var(--primary)';
-    
-    setTimeout(() => {
-        ratingMessage.style.display = 'none';
-    }, 3000);
-}
+            });
+        });
+
 
         // Comment form submission
         const commentForm = document.getElementById('commentForm');
