@@ -43,10 +43,10 @@ function loadEnv($path) {
 loadEnv(__DIR__ . '/../.env');
 
 // Database Configuration
-define('DB_HOST', getenv('DB_HOST') ?: 'localhost');
-define('DB_NAME', getenv('DB_NAME') ?: 'soulbalance_blog');
-define('DB_USER', getenv('DB_USER') ?: 'root');
-define('DB_PASS', getenv('DB_PASS') ?: '');
+define('DB_HOST', getenv('DB_HOST') ?: 'sql310.infinityfree.com');
+define('DB_NAME', getenv('DB_NAME') ?: 'if0_40368929_soulbalance');
+define('DB_USER', getenv('DB_USER') ?: 'if0_40368929');
+define('DB_PASS', getenv('DB_PASS') ?: 'NnACtKpS3O');
 
 // Application Configuration
 define('APP_NAME', 'SoulBalance');
@@ -54,6 +54,16 @@ define('APP_URL', getenv('APP_URL') ?: 'http://localhost');
 define('APP_ENV', getenv('APP_ENV') ?: 'development');
 define('DEBUG_MODE', filter_var(getenv('DEBUG_MODE'), FILTER_VALIDATE_BOOLEAN));
 
+define('SITE_URL', 'https://wellness-blog.infinityfree.me');
+define('SITE_NAME', 'SoulBalance');
+
+define('UPLOAD_PATH', __DIR__ . '/../uploads/');
+define('UPLOAD_URL', SITE_URL . '/uploads/');
+
+// Session configuration
+ini_set('session.cookie_httponly', 1);
+ini_set('session.use_only_cookies', 1);
+ini_set('session.cookie_secure', 1);
 // Session Configuration
 define('SESSION_LIFETIME', getenv('SESSION_LIFETIME') ?: 3600);
 define('TIMEZONE', getenv('TIMEZONE') ?: 'Asia/Colombo');
@@ -74,7 +84,7 @@ define('MAIL_FROM_ADDRESS', getenv('MAIL_FROM_ADDRESS') ?: 'noreply@soulbalance.
 define('MAIL_FROM_NAME', getenv('MAIL_FROM_NAME') ?: 'SoulBalance');
 
 // Set timezone
-date_default_timezone_set(TIMEZONE);
+date_default_timezone_set('Asia/Colombo');
 
 // Error reporting based on environment
 if (APP_ENV === 'production') {

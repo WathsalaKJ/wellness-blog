@@ -117,14 +117,14 @@ $categories = ['Yoga', 'Meditation', 'Nutrition'];
             </div>
         </div>
         
-        <!-- Testimonial Quote - Outside Box -->
+        <!-- Testimonial Quote - Right Aligned -->
         <div class="hero-testimonial fade-in">
-            <div class="testimonial-avatar">
-                <img src="assets/images/testimonial-avatar.png" alt="Testimonial" loading="lazy">
-            </div>
             <blockquote>
-                <p>"Find harmony in body and mind with our yoga and fitness workshop."</p>
+                <p>Find harmony in body and mind with our yoga and fitness workshop.</p>
             </blockquote>
+            <div class="testimonial-avatar">
+                <img src="assets/images/thumbnail-5.png" alt="Testimonial" loading="lazy">
+            </div>
         </div>
     </div>
 </section>

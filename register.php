@@ -207,10 +207,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <img src="assets/images/register-meditation.jpg" alt="Woman meditating outdoors" class="auth-bg-image" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22800%22 height=%221024%22%3E%3Crect fill=%22%23f2e9e3%22 width=%22800%22 height=%221024%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22sans-serif%22 font-size=%2248%22 fill=%22%23ff7a00%22%3EMeditation%3C/text%3E%3C/svg%3E'">
             <!-- Inspirational Quote -->
             <div class="auth-quote auth-quote-bottom">
-                <!-- Quote Icon -->
-                <svg class="quote-icon" width="22" height="22" viewBox="0 0 22 22" fill="#ff6f00">
-                    <path d="M9.5 4L4 9.5L9.5 15V11C14 11 17 13 18.5 17C17.5 12.5 15 8 9.5 7V4Z"/>
-                </svg>
+                
                 <p>We are passionate about creating a space where every body is family.</p>
             </div>
         </div>

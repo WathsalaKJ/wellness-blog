@@ -127,7 +127,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <!-- Navigation -->
+    <<!-- Navigation -->
     <header class="navbar">
         <div class="container">
             <div class="nav-brand">
@@ -135,17 +135,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
             <nav class="nav-links">
                 <a href="index.php">Home</a>
-                <a href="dashboard.php">Dashboard</a>
+                <a href="latest_blogs.php">Blog</a>
+                <a href="categories.php" class="active">Categories</a>
+                <a href="about.php">About</a>
+                <a href="contact.php">Contact</a>
             </nav>
             <div class="nav-actions">
-                <div class="user-info">
-                    <span class="username"><?php echo htmlspecialchars($username); ?></span>
-                    <a href="logout.php" class="btn btn-secondary btn-sm logout-link">Logout</a>
-                </div>
+                <?php if (isset($_SESSION['user_id'])): ?>
+                    <div class="user-info">
+                        <span class="username">Welcome, <?php echo htmlspecialchars($_SESSION['username']); ?></span>
+                        <a href="dashboard.php" class="btn btn-primary btn-sm">Dashboard</a>
+                        <a href="logout.php" class="btn btn-secondary btn-sm logout-link">Logout</a>
+                    </div>
+                <?php else: ?>
+                    <a href="login.php" class="btn btn-primary btn-sm">Sign In</a>
+                <?php endif; ?>
             </div>
         </div>
     </header>
-
     <!-- Main Content -->
     <main class="main-content">
         <div class="editor-container fade-in">
@@ -309,52 +316,96 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </footer>
 
     <script>
-        const fileInput = document.getElementById('featured_image');
-        const imagePreview = document.getElementById('image-preview');
-        const previewImg = document.getElementById('preview-img');
-        const uploadContent = document.getElementById('uploadContent');
+    const fileInput = document.getElementById('featured_image');
+    const imagePreview = document.getElementById('image-preview');
+    const previewImg = document.getElementById('preview-img');
+    const uploadContent = document.getElementById('uploadContent');
+    const contentEditor = document.getElementById('contentEditor');
+    const contentTextarea = document.getElementById('content');
+    const wordCount = document.getElementById('wordCount');
+    const charCount = document.getElementById('charCount');
 
-        fileInput.addEventListener('change', previewImage);
+    // Load existing content into the editor on page load
+    window.addEventListener('DOMContentLoaded', function() {
+        if (contentTextarea.value) {
+            contentEditor.innerHTML = contentTextarea.value;
+            updateCounts();
+        }
+    });
 
-        function previewImage() {
-            const file = fileInput.files[0];
-            if (file) {
-                const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-                if (!validTypes.includes(file.type)) {
-                    alert('Please select a valid image file');
-                    return;
-                }
-                
-                if (file.size > 5 * 1024 * 1024) {
-                    alert('File size must be less than 5MB');
-                    return;
-                }
-                
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    previewImg.src = e.target.result;
-                    uploadContent.style.display = 'none';
-                    imagePreview.style.display = 'flex';
-                };
-                reader.readAsDataURL(file);
+    // Sync contenteditable div with hidden textarea
+    contentEditor.addEventListener('input', function() {
+        contentTextarea.value = contentEditor.innerHTML;
+        updateCounts();
+    });
+
+    // Update word and character counts
+    function updateCounts() {
+        const text = contentEditor.innerText || '';
+        const words = text.trim().split(/\s+/).filter(word => word.length > 0).length;
+        const chars = text.length;
+        
+        wordCount.textContent = `${words} word${words !== 1 ? 's' : ''}`;
+        charCount.textContent = `${chars} character${chars !== 1 ? 's' : ''}`;
+    }
+
+    // Text formatting functions
+    function formatText(command, value = null) {
+        document.execCommand(command, false, value);
+        contentEditor.focus();
+    }
+
+    function insertLink() {
+        const url = prompt('Enter URL:');
+        if (url) {
+            document.execCommand('createLink', false, url);
+        }
+        contentEditor.focus();
+    }
+
+    // Image upload handlers
+    fileInput.addEventListener('change', previewImage);
+
+    function previewImage() {
+        const file = fileInput.files[0];
+        if (file) {
+            const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+            if (!validTypes.includes(file.type)) {
+                alert('Please select a valid image file');
+                return;
             }
+            
+            if (file.size > 5 * 1024 * 1024) {
+                alert('File size must be less than 5MB');
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                previewImg.src = e.target.result;
+                uploadContent.style.display = 'none';
+                imagePreview.style.display = 'flex';
+            };
+            reader.readAsDataURL(file);
         }
+    }
 
-        function removeImage() {
-            fileInput.value = '';
-            imagePreview.style.display = 'none';
-            uploadContent.style.display = 'block';
-        }
+    function removeImage() {
+        fileInput.value = '';
+        imagePreview.style.display = 'none';
+        uploadContent.style.display = 'block';
+    }
 
-        const observer = new IntersectionObserver(entries => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                }
-            });
-        }, { threshold: 0.1 });
+    // Intersection observer for animations
+    const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+            }
+        });
+    }, { threshold: 0.1 });
 
-        document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
-    </script>
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+</script>
 </body>
 </html>
