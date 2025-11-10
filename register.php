@@ -92,6 +92,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="container">
             <!-- Brand/Logo -->
             <div class="nav-brand">
+                <img src="assets/images/logo.jpg" alt="SoulBalance Logo" class="nav-logo">
                 <h1>SoulBalance</h1>
             </div>
             <!-- Navigation Links -->
@@ -118,6 +119,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
         </div>
     </header>
+    
 
     <!-- Split Screen Authentication Layout -->
     <div class="auth-split-screen register-layout">

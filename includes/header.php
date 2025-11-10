@@ -1,12 +1,13 @@
-<!-- Navigation Bar -->
+<!-- Navigation -->
 <header class="navbar">
     <div class="container">
         <div class="nav-brand">
+            <img src="assets/images/logo.jpg" alt="SoulBalance Logo" class="nav-logo">
             <h1>SoulBalance</h1>
         </div>
         <nav class="nav-links">
             <a href="index.php" class="active">Home</a>
-            <a href="index.php">Blog</a>
+            <a href="latest_blogs.php">Blog</a>
             <a href="categories.php">Categories</a>
             <a href="about.php">About</a>
             <a href="contact.php">Contact</a>
