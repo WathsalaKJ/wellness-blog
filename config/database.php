@@ -4,6 +4,9 @@
  * Provides PDO connection to MySQL database with singleton pattern
  */
 
+// Include configuration file that defines DB constants
+require_once __DIR__ . '/config.php';
+
 class Database {
     private static $instance = null;
     private $connection;
