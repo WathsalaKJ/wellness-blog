@@ -384,17 +384,18 @@ a:hover { color: var(--primary-dark); }
   overflow: hidden;
   position: relative;
   min-height: 700px;
+  inset: 0;
 }
 
 .hero::before {
   content: '';
   position: absolute;
-  width: 1490px;
+  width: 1590px;
   height: 690px;
-  inset: 0;
+ inset: 0;
   background: var(--bg-main);
   top: -170px;
-  left: -25px;
+ 
   z-index: 0;
   border-radius: 0;
 }
