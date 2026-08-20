@@ -4,6 +4,9 @@
  * Initializes database constants and session management
  */
 
+// Session cookie hardening lives in .htaccess (php_flag) since every page
+// calls session_start() before this file loads, so ini_set() here is too late.
+
 // Start session if not already started
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
@@ -46,10 +49,6 @@ date_default_timezone_set(TIMEZONE);
 // Error reporting (disable in production)
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
-
-// Session cookie hardening
-ini_set('session.cookie_httponly', 1);
-ini_set('session.use_only_cookies', 1);
 
 // CORS Headers (optional - for API)
 header('Access-Control-Allow-Origin: *');
