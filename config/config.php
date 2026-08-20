@@ -12,16 +12,13 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Load environment variables (optional - for production use)
-// Uncomment and modify for .env file support
-/*
+// Load environment variables from .env
 if (file_exists(__DIR__ . '/../.env')) {
     $env = parse_ini_file(__DIR__ . '/../.env');
     foreach ($env as $key => $value) {
         putenv("$key=$value");
     }
 }
-*/
 
 // Database Configuration
 define('DB_HOST', getenv('DB_HOST') ?: 'localhost');
@@ -46,9 +43,9 @@ define('MAX_FILE_SIZE', 5 * 1024 * 1024); // 5MB
 // Set timezone
 date_default_timezone_set(TIMEZONE);
 
-// Error reporting (disable in production)
+// Error reporting (hidden from visitors in production)
 error_reporting(E_ALL);
-ini_set('display_errors', 1);
+ini_set('display_errors', getenv('APP_ENV') === 'production' ? 0 : 1);
 
 // CORS Headers (optional - for API)
 header('Access-Control-Allow-Origin: *');
