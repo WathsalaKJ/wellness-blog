@@ -24,3 +24,8 @@
    php_value post_max_size 10M
    php_value max_execution_time 300
    php_value max_input_time 300
+
+   # Session cookie hardening (must be set here, not via ini_set, since
+   # pages call session_start() before config.php ever runs)
+   php_flag session.cookie_httponly On
+   php_flag session.use_only_cookies On
