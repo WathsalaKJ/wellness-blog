@@ -28,7 +28,7 @@ require_once 'config/database.php';
 <body>
     <?php $activePage = 'about'; include 'includes/header.php'; ?>
 
-    
+
 
 <!-- Enhanced Hero Section - Matching Figma -->
 <section class="about-hero">
@@ -38,7 +38,7 @@ require_once 'config/database.php';
             <div class="page-hero-title">
                 <h1><span>About</span> <em>Us</em></h1>
             </div>
-           
+
             <div class="breadcrumb">
                 <a href="index.php">Home</a> <span>&gt;&gt; About</span> <span>Us</span>
             </div>
@@ -127,6 +127,6 @@ require_once 'config/database.php';
     </footer>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
 
-    
+
 </body>
 </html>
