@@ -118,33 +118,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <!-- Navigation -->
-    <header class="navbar">
-        <div class="container">
-            <div class="nav-brand">
-                <a href="index.php"><h1>SoulBalance</h1></a>
-            </div>
-            <nav class="nav-links">
-                <a href="index.php">Home</a>
-                <a href="latest_blogs.php">Blog</a>
-                <a href="categories.php">Categories</a>
-                <a href="about.php">About</a>
-                <a href="contact.php" class="active">Contact</a>
-            </nav>
-            <div class="nav-actions">
-                <?php if (isset($_SESSION['user_id'])): ?>
-                    <div class="user-info">
-                        <span class="username">Welcome, <?php echo htmlspecialchars($_SESSION['username']); ?></span>
-                        <a href="dashboard.php" class="btn btn-primary btn-sm">Dashboard</a>
-                        <a href="logout.php" class="btn btn-secondary btn-sm">Logout</a>
-                    </div>
-                <?php else: ?>
-                    <a href="login.php" class="btn btn-primary btn-sm">Sign In</a>
-                    <a href="register.php" class="btn btn-secondary btn-sm">Sign Up</a>
-                <?php endif; ?>
-            </div>
-        </div>
-    </header>
+    <?php $activePage = 'contact'; include 'includes/header.php'; ?>
 
    
 

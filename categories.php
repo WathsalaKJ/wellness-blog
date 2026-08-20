@@ -60,32 +60,7 @@ $categories = [
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Source+Sans+Pro:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <!-- Navigation -->
-    <header class="navbar">
-        <div class="container">
-            <div class="nav-brand">
-                <h1>SoulBalance</h1>
-            </div>
-            <nav class="nav-links">
-                <a href="index.php">Home</a>
-                <a href="latest_blogs.php">Blog</a>
-                <a href="categories.php" class="active">Categories</a>
-                <a href="about.php">About</a>
-                <a href="contact.php">Contact</a>
-            </nav>
-            <div class="nav-actions">
-                <?php if (isset($_SESSION['user_id'])): ?>
-                    <div class="user-info">
-                        <span class="username">Welcome, <?php echo htmlspecialchars($_SESSION['username']); ?></span>
-                        <a href="dashboard.php" class="btn btn-primary btn-sm">Dashboard</a>
-                        <a href="logout.php" class="btn btn-secondary btn-sm logout-link">Logout</a>
-                    </div>
-                <?php else: ?>
-                    <a href="login.php" class="btn btn-primary btn-sm">Sign In</a>
-                <?php endif; ?>
-            </div>
-        </div>
-    </header>
+    <?php $activePage = 'categories'; include 'includes/header.php'; ?>
 
    <!-- Enhanced Breadcrumb Hero Section - Same Style as About Page -->
 <section class="breadcrumb-hero">

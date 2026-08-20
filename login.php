@@ -16,10 +16,10 @@ $error = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     require_once 'config/config.php';
     require_once 'config/database.php';
-    
+
     $email = isset($_POST['email']) ? trim($_POST['email']) : '';
     $password = isset($_POST['password']) ? $_POST['password'] : '';
-    
+
     if (empty($email) || empty($password)) {
         $error = 'Email and password are required';
     } else {
@@ -28,13 +28,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt = $db->prepare("SELECT id, username, email, password, role FROM user WHERE email = ?");
             $stmt->execute([$email]);
             $user = $stmt->fetch();
-            
+
             if ($user && password_verify($password, $user['password'])) {
                 $_SESSION['user_id'] = $user['id'];
                 $_SESSION['username'] = $user['username'];
                 $_SESSION['email'] = $user['email'];
                 $_SESSION['role'] = $user['role'];
-                
+
                 header('Location: dashboard.php');
                 exit();
             } else {
@@ -58,32 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 <body>
 
-<!-- Navigation -->
-    <header class="navbar">
-        <div class="container">
-            <div class="nav-brand">
-                <h1>SoulBalance</h1>
-            </div>
-            <nav class="nav-links">
-                <a href="index.php">Home</a>
-                <a href="index.php" class="active">Blog</a>
-                <a href="categories.php">Categories</a>
-                <a href="about.php">About</a>
-                <a href="contact.php">Contact</a>
-            </nav>
-            <div class="nav-actions">
-                <?php if (isset($_SESSION['user_id'])): ?>
-                    <div class="user-info">
-                        <span class="username"><?php echo htmlspecialchars($_SESSION['username']); ?></span>
-                        <a href="dashboard.php" class="btn btn-primary btn-sm">Dashboard</a>
-                        <a href="logout.php" class="btn btn-secondary btn-sm logout-link">Logout</a>
-                    </div>
-                <?php else: ?>
-                    <a href="login.php" class="btn btn-primary btn-sm">Sign In</a>
-                <?php endif; ?>
-            </div>
-        </div>
-    </header>
+    <?php include 'includes/header.php'; ?>
 
     <!-- Auth Split Screen -->
     <div class="auth-split-screen">
@@ -116,23 +91,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <form method="POST" class="auth-form">
                     <div class="form-group">
                         <label for="email">Email</label>
-                        <input 
-                            type="email" 
-                            id="email" 
-                            name="email" 
-                            placeholder="mail@abc.com" 
-                            required 
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            placeholder="mail@abc.com"
+                            required
                             value="<?php echo htmlspecialchars($_POST['email'] ?? ''); ?>"
                         >
                     </div>
 
                     <div class="form-group">
                         <label for="password">Password</label>
-                        <input 
-                            type="password" 
-                            id="password" 
-                            name="password" 
-                            placeholder="••••••••" 
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            placeholder="••••••••"
                             required
                         >
                     </div>

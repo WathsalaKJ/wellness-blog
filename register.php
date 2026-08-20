@@ -18,13 +18,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Include configuration and database connection files
     require_once 'config/config.php';
     require_once 'config/database.php';
-    
+
     // Sanitize and retrieve form input values
     $username = isset($_POST['username']) ? trim($_POST['username']) : '';
     $email = isset($_POST['email']) ? trim($_POST['email']) : '';
     $password = isset($_POST['password']) ? $_POST['password'] : '';
     $confirmPassword = isset($_POST['confirm_password']) ? $_POST['confirm_password'] : '';
-    
+
     // Validate form inputs
     if (empty($username) || empty($email) || empty($password) || empty($confirmPassword)) {
         $error = 'All fields are required';
@@ -39,28 +39,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         try {
             // Get database connection
             $db = getDB();
-            
+
             // Check if email or username already exists
             $checkStmt = $db->prepare("SELECT id FROM user WHERE email = ? OR username = ?");
             $checkStmt->execute([$email, $username]);
-            
+
             if ($checkStmt->fetch()) {
                 $error = 'Email or username already exists';
             } else {
                 // Hash password for secure storage
                 $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-                
+
                 // Insert new user into database with default 'user' role
                 $stmt = $db->prepare("INSERT INTO user (username, email, password, role) VALUES (?, ?, ?, 'user')");
                 $stmt->execute([$username, $email, $hashedPassword]);
-                
+
                 // Get the newly created user ID and set session variables
                 $userId = $db->lastInsertId();
                 $_SESSION['user_id'] = $userId;
                 $_SESSION['username'] = $username;
                 $_SESSION['email'] = $email;
                 $_SESSION['role'] = 'user';
-                
+
                 // Redirect to dashboard after successful registration
                 header('Location: dashboard.php');
                 exit();
@@ -87,37 +87,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 <body>
 
-    <!-- Navigation Header -->
-    <header class="navbar">
-        <div class="container">
-            <!-- Brand/Logo -->
-            <div class="nav-brand">
-                <h1>SoulBalance</h1>
-            </div>
-            <!-- Navigation Links -->
-            <nav class="nav-links">
-                <a href="index.php">Home</a>
-                <a href="index.php" class="active">Blog</a>
-                <a href="categories.php">Categories</a>
-                <a href="about.php">About</a>
-                <a href="#contact.php">Contact</a>
-            </nav>
-            <!-- User Actions -->
-            <div class="nav-actions">
-                <?php if (isset($_SESSION['user_id'])): ?>
-                    <!-- Display user info and actions when logged in -->
-                    <div class="user-info">
-                        <span class="username"><?php echo htmlspecialchars($_SESSION['username']); ?></span>
-                        <a href="dashboard.php" class="btn btn-primary btn-sm">Dashboard</a>
-                        <a href="logout.php" class="btn btn-secondary btn-sm logout-link">Logout</a>
-                    </div>
-                <?php else: ?>
-                    <!-- Display sign in button when not logged in -->
-                    <a href="login.php" class="btn btn-primary btn-sm">Sign In</a>
-                <?php endif; ?>
-            </div>
-        </div>
-    </header>
+    <?php include 'includes/header.php'; ?>
 
     <!-- Split Screen Authentication Layout -->
     <div class="auth-split-screen register-layout">
@@ -140,12 +110,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <!-- Username Field -->
                     <div class="form-group">
                         <label for="username">Username</label>
-                        <input 
-                            type="text" 
-                            id="username" 
-                            name="username" 
-                            placeholder="Choose a unique user name" 
-                            required 
+                        <input
+                            type="text"
+                            id="username"
+                            name="username"
+                            placeholder="Choose a unique user name"
+                            required
                             value="<?php echo htmlspecialchars($_POST['username'] ?? ''); ?>"
                         >
                         <small>This will be displayed on your blog posts</small>
@@ -154,12 +124,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <!-- Email Field -->
                     <div class="form-group">
                         <label for="email">Email</label>
-                        <input 
-                            type="email" 
-                            id="email" 
-                            name="email" 
-                            placeholder="mail@abc.com" 
-                            required 
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            placeholder="mail@abc.com"
+                            required
                             value="<?php echo htmlspecialchars($_POST['email'] ?? ''); ?>"
                         >
                     </div>
@@ -167,11 +137,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <!-- Password Field -->
                     <div class="form-group">
                         <label for="password">Password</label>
-                        <input 
-                            type="password" 
-                            id="password" 
-                            name="password" 
-                            placeholder="Create a strong password" 
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            placeholder="Create a strong password"
                             required
                         >
                         <small>At least 8 characters with letters and numbers</small>
@@ -180,11 +150,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <!-- Confirm Password Field -->
                     <div class="form-group">
                         <label for="confirm_password">Confirm Password</label>
-                        <input 
-                            type="password" 
-                            id="confirm_password" 
-                            name="confirm_password" 
-                            placeholder="Re-enter your password" 
+                        <input
+                            type="password"
+                            id="confirm_password"
+                            name="confirm_password"
+                            placeholder="Re-enter your password"
                             required
                         >
                     </div>
@@ -223,7 +193,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Set initial state for animation
             el.style.opacity = '0';
             el.style.transform = index === 0 ? 'translateX(-30px)' : 'translateX(30px)';
-            
+
             // Animate elements into view with staggered timing
             setTimeout(() => {
                 el.style.transition = 'all 0.6s ease';

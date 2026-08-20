@@ -1,15 +1,16 @@
-<!-- Navigation Bar -->
+<?php $activePage = $activePage ?? ''; ?>
+<!-- Navigation -->
 <header class="navbar">
     <div class="container">
         <div class="nav-brand">
-            <h1>SoulBalance</h1>
+            <a href="index.php"><h1>SoulBalance</h1></a>
         </div>
         <nav class="nav-links">
-            <a href="index.php" class="active">Home</a>
-            <a href="index.php">Blog</a>
-            <a href="categories.php">Categories</a>
-            <a href="about.php">About</a>
-            <a href="contact.php">Contact</a>
+            <a href="index.php" class="<?php echo $activePage === 'home' ? 'active' : ''; ?>">Home</a>
+            <a href="latest_blogs.php" class="<?php echo $activePage === 'blog' ? 'active' : ''; ?>">Blog</a>
+            <a href="categories.php" class="<?php echo $activePage === 'categories' ? 'active' : ''; ?>">Categories</a>
+            <a href="about.php" class="<?php echo $activePage === 'about' ? 'active' : ''; ?>">About</a>
+            <a href="contact.php" class="<?php echo $activePage === 'contact' ? 'active' : ''; ?>">Contact</a>
         </nav>
         <div class="nav-actions">
             <?php if (isset($_SESSION['user_id'])): ?>

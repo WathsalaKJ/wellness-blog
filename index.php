@@ -11,17 +11,17 @@ require_once 'config/database.php';
 // Get all blog posts with author information
 try {
     $db = getDB();
-    
+
     // Pagination setup
     $postsPerPage = 9;
     $page = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
     $offset = ($page - 1) * $postsPerPage;
-    
+
     // Get total posts count
     $countStmt = $db->query("SELECT COUNT(*) as total FROM blogPost");
     $totalPosts = $countStmt->fetch()['total'];
     $totalPages = ceil($totalPosts / $postsPerPage);
-    
+
     // Get posts for current page
     // Get posts for current page
    $stmt = $db->prepare("
@@ -35,7 +35,7 @@ try {
     $stmt->bindValue(2, $offset, PDO::PARAM_INT);
     $stmt->execute();
     $posts = $stmt->fetchAll();
-    
+
 } catch (Exception $e) {
     $error = "Failed to load posts";
     $posts = [];
@@ -76,32 +76,7 @@ $categories = ['Yoga', 'Meditation', 'Nutrition'];
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Lato:wght@300;400;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <!-- Navigation -->
-    <header class="navbar">
-    <div class="container">
-        <div class="nav-brand">
-            <h1>SoulBalance</h1>
-        </div>
-        <nav class="nav-links">
-            <a href="index.php" class="active">Home</a>
-            <a href="latest_blogs.php">Blog</a> <!-- Changed link -->
-            <a href="categories.php">Categories</a>
-            <a href="about.php">About</a>
-            <a href="contact.php">Contact</a>
-        </nav>
-        <div class="nav-actions">
-            <?php if (isset($_SESSION['user_id'])): ?>
-                <div class="user-info">
-                    <span class="username">Welcome, <?php echo htmlspecialchars($_SESSION['username']); ?></span>
-                    <a href="dashboard.php" class="btn btn-primary btn-sm">Dashboard</a>
-                    <a href="logout.php" class="btn btn-secondary btn-sm logout-link">Logout</a>
-                </div>
-            <?php else: ?>
-                <a href="login.php" class="btn btn-primary btn-sm">Sign In</a>
-            <?php endif; ?>
-        </div>
-    </div>
-</header>
+    <?php $activePage = 'home'; include 'includes/header.php'; ?>
 <!-- Enhanced Hero Section -->
 <section class="hero hero-parallax">
     <div class="container">
@@ -116,7 +91,7 @@ $categories = ['Yoga', 'Meditation', 'Nutrition'];
                 <a href="<?php echo isset($_SESSION['user_id']) ? 'dashboard.php' : 'register.php'; ?>" class="btn btn-primary">Get Started</a>
             </div>
         </div>
-        
+
         <!-- Testimonial Quote - Outside Box -->
         <div class="hero-testimonial fade-in">
             <div class="testimonial-avatar">
@@ -179,7 +154,7 @@ $categories = ['Yoga', 'Meditation', 'Nutrition'];
     </div>
 </div>
             </div>
-        <?php 
+        <?php
             else:
                 echo '<p style="text-align: center; padding: 60px 20px; color: #ffffff;">No blog posts available yet.</p>';
             endif;
@@ -198,22 +173,22 @@ $categories = ['Yoga', 'Meditation', 'Nutrition'];
 
     <!-- Enhanced JavaScript -->
     <script>
-        
+
         // ENHANCED HERO ANIMATIONS
 
-        
+
         document.addEventListener('DOMContentLoaded', function() {
-            
+
             // Parallax effect for hero image
             const heroImageCircle = document.querySelector('.hero-image-circle');
             const heroText = document.querySelector('.hero-text');
             const latestBlogsSection = document.querySelector('.latest-blogs-section');
-            
+
             if (heroImageCircle && heroText) {
                 window.addEventListener('scroll', function() {
                     const scrolled = window.pageYOffset;
                     const rate = scrolled * 0.3;
-                    
+
                     heroImageCircle.style.transform = `translateY(${rate * 0.5}px)`;
                     heroText.style.transform = `translateY(${rate * 0.3}px)`;
                 });
@@ -243,16 +218,16 @@ $categories = ['Yoga', 'Meditation', 'Nutrition'];
 
             // Magnetic button effect
             const buttons = document.querySelectorAll('.btn-primary, .btn-secondary');
-            
+
             buttons.forEach(button => {
                 button.addEventListener('mousemove', function(e) {
                     const rect = button.getBoundingClientRect();
                     const x = e.clientX - rect.left - rect.width / 2;
                     const y = e.clientY - rect.top - rect.height / 2;
-                    
+
                     button.style.transform = `translate(${x * 0.2}px, ${y * 0.2}px) scale(1.05)`;
                 });
-                
+
                 button.addEventListener('mouseleave', function() {
                     button.style.transform = 'translate(0, 0) scale(1)';
                 });
@@ -260,11 +235,11 @@ $categories = ['Yoga', 'Meditation', 'Nutrition'];
 
             // Hero text stagger animation
             const heroElements = document.querySelectorAll('.hero-tagline, .hero-text h1, .hero-description, .hero-text .btn');
-            
+
             heroElements.forEach((el, index) => {
                 el.style.opacity = '0';
                 el.style.transform = 'translateY(30px)';
-                
+
                 setTimeout(() => {
                     el.style.transition = 'all 0.8s cubic-bezier(0.4, 0, 0.2, 1)';
                     el.style.opacity = '1';
@@ -274,22 +249,22 @@ $categories = ['Yoga', 'Meditation', 'Nutrition'];
 
             // Blog card hover tilt effect
             const blogCards = document.querySelectorAll('.blog-card-small');
-            
+
             blogCards.forEach(card => {
                 card.addEventListener('mousemove', function(e) {
                     const rect = card.getBoundingClientRect();
                     const x = e.clientX - rect.left;
                     const y = e.clientY - rect.top;
-                    
+
                     const centerX = rect.width / 2;
                     const centerY = rect.height / 2;
-                    
+
                     const rotateX = (y - centerY) / 20;
                     const rotateY = (centerX - x) / 20;
-                    
+
                     card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-15px) scale(1.02)`;
                 });
-                
+
                 card.addEventListener('mouseleave', function() {
                     card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateY(0) scale(1)';
                 });
@@ -301,7 +276,7 @@ $categories = ['Yoga', 'Meditation', 'Nutrition'];
                     const scrolled = window.pageYOffset;
                     const sectionTop = latestBlogsSection.offsetTop;
                     const sectionHeight = latestBlogsSection.offsetHeight;
-                    
+
                     if (scrolled > sectionTop - window.innerHeight && scrolled < sectionTop + sectionHeight) {
                         const bgImage = latestBlogsSection.querySelector('.page-hero-image');
                         if (bgImage) {

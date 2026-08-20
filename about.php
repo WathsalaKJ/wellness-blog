@@ -26,32 +26,7 @@ require_once 'config/database.php';
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <!-- Navigation -->
-    <header class="navbar">
-        <div class="container">
-            <div class="nav-brand">
-                <h1>SoulBalance</h1>
-            </div>
-            <nav class="nav-links">
-                <a href="index.php">Home</a>
-                <a href="latest_blogs.php">Blog</a>
-                <a href="categories.php">Categories</a>
-                <a href="about.php" class="active">About</a>
-                <a href="contact.php">Contact</a>
-            </nav>
-            <div class="nav-actions">
-                <?php if (isset($_SESSION['user_id'])): ?>
-                    <div class="user-info">
-                        <span class="username">Welcome, <?php echo htmlspecialchars($_SESSION['username']); ?></span>
-                        <a href="dashboard.php" class="btn btn-primary btn-sm">Dashboard</a>
-                        <a href="logout.php" class="btn btn-secondary btn-sm logout-link">Logout</a>
-                    </div>
-                <?php else: ?>
-                    <a href="login.php" class="btn btn-primary btn-sm">Sign In</a>
-                <?php endif; ?>
-            </div>
-        </div>
-    </header>
+    <?php $activePage = 'about'; include 'includes/header.php'; ?>
 
     
 

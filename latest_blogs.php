@@ -10,17 +10,17 @@ require_once 'config/database.php';
 // Get all blog posts for Latest News & Insights
 try {
     $db = getDB();
-    
+
     // Pagination setup
     $postsPerPage = 9;
     $page = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
     $offset = ($page - 1) * $postsPerPage;
-    
+
     // Get total posts count
     $countStmt = $db->query("SELECT COUNT(*) as total FROM blogPost");
     $totalPosts = $countStmt->fetch()['total'];
     $totalPages = ceil($totalPosts / $postsPerPage);
-    
+
     // Get posts for current page
     $stmt = $db->prepare("
         SELECT bp.id, bp.title, bp.content, bp.category, bp.featured_image, bp.created_at, u.username, u.id as user_id
@@ -33,7 +33,7 @@ try {
     $stmt->bindValue(2, $offset, PDO::PARAM_INT);
     $stmt->execute();
     $posts = $stmt->fetchAll();
-    
+
 } catch (Exception $e) {
     $error = "Failed to load posts";
     $posts = [];
@@ -60,37 +60,12 @@ function formatDate($date) {
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Lato:wght@300;400;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <!-- Navigation -->
-    <header class="navbar">
-        <div class="container">
-            <div class="nav-brand">
-                <h1>SoulBalance</h1>
-            </div>
-            <nav class="nav-links">
-                <a href="index.php">Home</a>
-                <a href="latest_blogs.php" class="active">Blog</a>
-                <a href="categories.php">Categories</a>
-                <a href="about.php">About</a>
-                <a href="contact.php">Contact</a>
-            </nav>
-            <div class="nav-actions">
-                <?php if (isset($_SESSION['user_id'])): ?>
-                    <div class="user-info">
-                        <span class="username">Welcome, <?php echo htmlspecialchars($_SESSION['username']); ?></span>
-                        <a href="dashboard.php" class="btn btn-primary btn-sm">Dashboard</a>
-                        <a href="logout.php" class="btn btn-secondary btn-sm logout-link">Logout</a>
-                    </div>
-                <?php else: ?>
-                    <a href="login.php" class="btn btn-primary btn-sm">Sign In</a>
-                <?php endif; ?>
-            </div>
-        </div>
-    </header>
+    <?php $activePage = 'blog'; include 'includes/header.php'; ?>
 
     <!-- Page Hero Section -->
        <section class="page-hero">
     <img src="assets/images/blog-hero-bg.jpg" alt="Blog background" class="page-hero-image" onerror="this.src='assets/images/about-hero.jpg'">
-    
+
     <div class="page-hero-content">
         <div class="container">
             <div class="page-hero-title">
@@ -99,7 +74,7 @@ function formatDate($date) {
                     <span class="title-italic">Blogs</span>
                 </h1>
             </div>
-            
+
             <div class="page-hero-bottom">
                 <div class="page-breadcrumb">
                     <a href="index.php">Home</a>
@@ -157,9 +132,9 @@ function formatDate($date) {
                     <?php if ($page > 1): ?>
                         <a href="latest_blogs.php?page=<?php echo $page - 1; ?>" class="btn btn-secondary">Previous</a>
                     <?php endif; ?>
-                    
+
                     <span class="page-info">Page <?php echo $page; ?> of <?php echo $totalPages; ?></span>
-                    
+
                     <?php if ($page < $totalPages): ?>
                         <a href="latest_blogs.php?page=<?php echo $page + 1; ?>" class="btn btn-secondary">Next</a>
                     <?php endif; ?>

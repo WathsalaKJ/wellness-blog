@@ -27,18 +27,18 @@ if ($postId === 0) {
 // Get the blog post
 try {
     $db = getDB();
-    
+
     $stmt = $db->prepare("SELECT id, user_id, title, content, category, featured_image FROM blogPost WHERE id = ?");
     $stmt->execute([$postId]);
     $post = $stmt->fetch();
-    
+
     // Enhanced authorization check with type casting
     if (!$post) {
         $_SESSION['error_message'] = 'Post not found';
         header('Location: dashboard.php');
         exit();
     }
-    
+
     // Ensure both values are integers for comparison
     if ((int)$post['user_id'] !== (int)$userId) {
         $_SESSION['error_message'] = 'You do not have permission to edit this post';
@@ -57,7 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $title = isset($_POST['title']) ? trim($_POST['title']) : '';
     $content = isset($_POST['content']) ? trim($_POST['content']) : '';
     $category = isset($_POST['category']) ? trim($_POST['category']) : '';
-    
+
     // Validate inputs
     if (empty($title) || empty($content)) {
         $error = 'Title and content are required';
@@ -65,21 +65,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         try {
             // Handle new image upload
             $imagePath = $post['featured_image']; // Keep existing image by default
-            
+
             if (isset($_FILES['featured_image']) && $_FILES['featured_image']['error'] === UPLOAD_ERR_OK) {
                 $uploadDir = 'uploads/blogs/';
-                
+
                 if (!is_dir($uploadDir)) {
                     mkdir($uploadDir, 0755, true);
                 }
-                
+
                 $fileInfo = pathinfo($_FILES['featured_image']['name']);
                 $extension = strtolower($fileInfo['extension']);
                 $fileName = uniqid() . '_' . time() . '.' . $extension;
                 $uploadPath = $uploadDir . $fileName;
-                
+
                 $allowed = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
-                
+
                 if (!in_array($extension, $allowed)) {
                     $error = 'Invalid image format';
                 } else if ($_FILES['featured_image']['size'] > 5 * 1024 * 1024) {
@@ -96,16 +96,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     }
                 }
             }
-            
+
             if (empty($error)) {
                 // Update blog post
                 $updateStmt = $db->prepare("
-                    UPDATE blogPost 
+                    UPDATE blogPost
                     SET title = ?, content = ?, category = ?, featured_image = ?, updated_at = NOW()
                     WHERE id = ? AND user_id = ?
                 ");
                 $updateStmt->execute([$title, $content, $category, $imagePath, $postId, $userId]);
-                
+
                 // Redirect to the post
                 header('Location: view_blog.php?id=' . $postId);
                 exit();
@@ -127,24 +127,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <!-- Navigation -->
-    <header class="navbar">
-        <div class="container">
-            <div class="nav-brand">
-                <h1>SoulBalance</h1>
-            </div>
-            <nav class="nav-links">
-                <a href="index.php">Home</a>
-                <a href="dashboard.php">Dashboard</a>
-            </nav>
-            <div class="nav-actions">
-                <div class="user-info">
-                    <span class="username"><?php echo htmlspecialchars($username); ?></span>
-                    <a href="logout.php" class="btn btn-secondary btn-sm logout-link">Logout</a>
-                </div>
-            </div>
-        </div>
-    </header>
+    <?php include 'includes/header.php'; ?>
 
     <!-- Main Content -->
     <main class="main-content">
@@ -160,11 +143,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </button>
                 </div>
             </div>
-            
+
             <?php if ($error): ?>
                 <div class="alert alert-error"><?php echo htmlspecialchars($error); ?></div>
             <?php endif; ?>
-            
+
             <form method="POST" enctype="multipart/form-data" class="editor-form" id="blog-form">
                 <div class="editor-layout">
                     <div class="editor-main">
@@ -186,7 +169,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 ?>
                             </select>
                         </div>
-                        
+
                         <div class="form-group">
                             <label for="content">Content *</label>
                             <div class="editor-toolbar">
@@ -267,14 +250,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <div class="editor-sidebar">
                         <div class="featured-image-section">
                             <h4>Featured Image</h4>
-                            
+
                             <?php if ($post['featured_image'] && file_exists($post['featured_image'])): ?>
                                 <div class="current-image">
                                     <p><strong>Current Image:</strong></p>
                                     <img src="<?php echo htmlspecialchars($post['featured_image']); ?>" alt="Current featured image" style="width: 100%; border-radius: var(--radius); margin-bottom: var(--spacing-sm);">
                                 </div>
                             <?php endif; ?>
-                            
+
                             <div class="image-upload-area" id="dropzone">
                                 <div class="image-upload-content" id="uploadContent">
                                     <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -324,12 +307,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     alert('Please select a valid image file');
                     return;
                 }
-                
+
                 if (file.size > 5 * 1024 * 1024) {
                     alert('File size must be less than 5MB');
                     return;
                 }
-                
+
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     previewImg.src = e.target.result;
