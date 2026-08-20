@@ -1,6 +1,8 @@
-# Redirect to HTTPS
+# Redirect to HTTPS (skip on local dev)
    RewriteEngine On
    RewriteCond %{HTTPS} off
+   RewriteCond %{HTTP_HOST} !^localhost [NC]
+   RewriteCond %{HTTP_HOST} !^127\.0\.0\.1 [NC]
    RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
    
    # Hide .php extension
