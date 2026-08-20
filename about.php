@@ -29,7 +29,6 @@ require_once 'config/database.php';
     <?php $activePage = 'about'; include 'includes/header.php'; ?>
 
 
-
 <!-- Enhanced Hero Section - Matching Figma -->
 <section class="about-hero">
     <img src="assets/images/about-hero.jpg" alt="Wellness community background">

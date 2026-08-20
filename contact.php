@@ -121,7 +121,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <?php $activePage = 'contact'; include 'includes/header.php'; ?>
 
 
-
     <!-- Enhanced Hero Section - Same Style as About Page -->
 <section class="contact-hero">
     <img src="assets/images/about-hero.jpg" alt="Contact us background">

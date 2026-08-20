@@ -120,7 +120,7 @@ function getAvatarColor($username) {
     <!-- Page Hero Section -->
     <section class="page-hero">
         <div class="page-hero-overlay"></div>
-        <img src="assets/images/blog-hero-bg.jpg" alt="Blog background" class="page-hero-image">
+        <img src="assets/images/blog-hero-bg.jpg" alt="Blog background" class="page-hero-image" onerror="this.src='assets/images/about-hero.jpg'">
 
         <div class="page-hero-content">
             <div class="container">

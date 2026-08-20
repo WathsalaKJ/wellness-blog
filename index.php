@@ -81,24 +81,35 @@ $categories = ['Yoga', 'Meditation', 'Nutrition'];
 <section class="hero hero-parallax">
     <div class="container">
         <div class="hero-content">
+            <!-- Left Side - Image Circle -->
             <div class="hero-image-circle slide-in-left">
-                <img src="assets/images/hero-yoga.png" alt="Yoga lifestyle - Group practicing yoga" loading="eager">
+                <img src="assets/images/hero-yoga.png" alt="Yoga lifestyle" loading="eager">
             </div>
+            
+            <!-- Right Side - Text Content with Background Shape -->
             <div class="hero-text slide-in-right">
+                <!-- Decorative Background Shape -->
+                <div class="hero-text-decoration">
+                    <img src="assets/images/testimonial-background.png" alt="Decorative shape" loading="lazy">
+                </div>
+                
                 <p class="hero-tagline">ELEVATE YOUR WELL BEING</p>
-                <h1>start a healthy way of life, today!</h1>
+                <h1>Start a healthy way of life, today!</h1>
                 <p class="hero-description">We believe in the strength of connection; connection with your physical self and connection to the greater world.</p>
-                <a href="<?php echo isset($_SESSION['user_id']) ? 'dashboard.php' : 'register.php'; ?>" class="btn btn-primary">Get Started</a>
+                <a href="<?php echo isset($_SESSION['user_id']) ? 'dashboard.php' : 'register.php'; ?>" class="btn btn-primary hero-btn">Get Start</a>
             </div>
         </div>
 
         <!-- Testimonial Quote - Outside Box -->
         <div class="hero-testimonial fade-in">
             <div class="testimonial-avatar">
-                <img src="assets/images/testimonial-avatar.png" alt="Testimonial" loading="lazy">
+                <img src="assets/images/thumbnail-5.png" alt="Testimonial" loading="lazy">
             </div>
             <blockquote>
-                <p>"Find harmony in body and mind with our yoga and fitness workshop."</p>
+                <svg class="quote-icon" width="22" height="22" viewBox="0 0 22 22" fill="#ff6f00">
+                    <path d="M9.5 4L4 9.5L9.5 15V11C14 11 17 13 18.5 17C17.5 12.5 15 8 9.5 7V4Z"/>
+                </svg>
+                <p>Find harmony in body and mind with our yoga and fitness workshop.</p>
             </blockquote>
         </div>
     </div>

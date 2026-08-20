@@ -292,52 +292,96 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </footer>
 
     <script>
-        const fileInput = document.getElementById('featured_image');
-        const imagePreview = document.getElementById('image-preview');
-        const previewImg = document.getElementById('preview-img');
-        const uploadContent = document.getElementById('uploadContent');
+    const fileInput = document.getElementById('featured_image');
+    const imagePreview = document.getElementById('image-preview');
+    const previewImg = document.getElementById('preview-img');
+    const uploadContent = document.getElementById('uploadContent');
+    const contentEditor = document.getElementById('contentEditor');
+    const contentTextarea = document.getElementById('content');
+    const wordCount = document.getElementById('wordCount');
+    const charCount = document.getElementById('charCount');
 
-        fileInput.addEventListener('change', previewImage);
+    // Load existing content into the editor on page load
+    window.addEventListener('DOMContentLoaded', function() {
+        if (contentTextarea.value) {
+            contentEditor.innerHTML = contentTextarea.value;
+            updateCounts();
+        }
+    });
 
-        function previewImage() {
-            const file = fileInput.files[0];
-            if (file) {
-                const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-                if (!validTypes.includes(file.type)) {
-                    alert('Please select a valid image file');
-                    return;
-                }
+    // Sync contenteditable div with hidden textarea
+    contentEditor.addEventListener('input', function() {
+        contentTextarea.value = contentEditor.innerHTML;
+        updateCounts();
+    });
 
-                if (file.size > 5 * 1024 * 1024) {
-                    alert('File size must be less than 5MB');
-                    return;
-                }
+    // Update word and character counts
+    function updateCounts() {
+        const text = contentEditor.innerText || '';
+        const words = text.trim().split(/\s+/).filter(word => word.length > 0).length;
+        const chars = text.length;
 
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    previewImg.src = e.target.result;
-                    uploadContent.style.display = 'none';
-                    imagePreview.style.display = 'flex';
-                };
-                reader.readAsDataURL(file);
+        wordCount.textContent = `${words} word${words !== 1 ? 's' : ''}`;
+        charCount.textContent = `${chars} character${chars !== 1 ? 's' : ''}`;
+    }
+
+    // Text formatting functions
+    function formatText(command, value = null) {
+        document.execCommand(command, false, value);
+        contentEditor.focus();
+    }
+
+    function insertLink() {
+        const url = prompt('Enter URL:');
+        if (url) {
+            document.execCommand('createLink', false, url);
+        }
+        contentEditor.focus();
+    }
+
+    // Image upload handlers
+    fileInput.addEventListener('change', previewImage);
+
+    function previewImage() {
+        const file = fileInput.files[0];
+        if (file) {
+            const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+            if (!validTypes.includes(file.type)) {
+                alert('Please select a valid image file');
+                return;
             }
+            
+            if (file.size > 5 * 1024 * 1024) {
+                alert('File size must be less than 5MB');
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                previewImg.src = e.target.result;
+                uploadContent.style.display = 'none';
+                imagePreview.style.display = 'flex';
+            };
+            reader.readAsDataURL(file);
         }
+    }
 
-        function removeImage() {
-            fileInput.value = '';
-            imagePreview.style.display = 'none';
-            uploadContent.style.display = 'block';
-        }
+    function removeImage() {
+        fileInput.value = '';
+        imagePreview.style.display = 'none';
+        uploadContent.style.display = 'block';
+    }
 
-        const observer = new IntersectionObserver(entries => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                }
-            });
-        }, { threshold: 0.1 });
+    // Intersection observer for animations
+    const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+            }
+        });
+    }, { threshold: 0.1 });
 
-        document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
-    </script>
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+</script>
 </body>
 </html>

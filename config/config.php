@@ -35,12 +35,21 @@ define('TIMEZONE', 'UTC');
 // Security
 define('SECRET_KEY', getenv('SECRET_KEY') ?: 'your-secret-key-change-in-production');
 
+// Upload Configuration
+define('UPLOAD_PATH', __DIR__ . '/../uploads/');
+define('UPLOAD_URL', APP_URL . '/uploads/');
+define('MAX_FILE_SIZE', 5 * 1024 * 1024); // 5MB
+
 // Set timezone
 date_default_timezone_set(TIMEZONE);
 
 // Error reporting (disable in production)
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
+
+// Session cookie hardening
+ini_set('session.cookie_httponly', 1);
+ini_set('session.use_only_cookies', 1);
 
 // CORS Headers (optional - for API)
 header('Access-Control-Allow-Origin: *');
