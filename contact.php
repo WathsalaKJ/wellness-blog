@@ -19,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $phone = isset($_POST['phone']) ? trim($_POST['phone']) : '';
     $subject = isset($_POST['subject']) ? trim($_POST['subject']) : '';
     $message = isset($_POST['message']) ? trim($_POST['message']) : '';
-    
+
     // Comprehensive validation
     if (empty($firstName)) {
         $error = 'First name is required';
@@ -48,14 +48,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Save to database
             $db = getDB();
             $stmt = $db->prepare("
-                INSERT INTO contact_messages 
-                (first_name, last_name, email, phone, subject, message, created_at, ip_address) 
+                INSERT INTO contact_messages
+                (first_name, last_name, email, phone, subject, message, created_at, ip_address)
                 VALUES (?, ?, ?, ?, ?, ?, NOW(), ?)
             ");
-            
+
             $ipAddress = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
             $fullName = $firstName . ' ' . $lastName;
-            
+
             $stmt->execute([
                 $firstName,
                 $lastName,
@@ -65,38 +65,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $message,
                 $ipAddress
             ]);
-            
+
             // Send email notification (configure mail settings in production)
             $to = "hello@soulbalance.com";
             $emailSubject = "New Contact Form: " . $subject;
             $emailBody = "
                 New contact form submission from SoulBalance website
-                
+
                 Name: $fullName
                 Email: $email
                 Phone: " . ($phone ?: 'Not provided') . "
                 Subject: $subject
-                
+
                 Message:
                 $message
-                
+
                 ---
                 Submitted: " . date('Y-m-d H:i:s') . "
                 IP Address: $ipAddress
             ";
-            
+
             $headers = "From: noreply@soulbalance.com\r\n";
             $headers .= "Reply-To: $email\r\n";
             $headers .= "X-Mailer: PHP/" . phpversion();
-            
+
             // Uncomment in production with proper mail configuration
             // mail($to, $emailSubject, $emailBody, $headers);
-            
+
             $success = 'Thank you for reaching out, ' . htmlspecialchars($firstName) . '! We\'ve received your message and will get back to you at ' . htmlspecialchars($email) . ' within 24-48 hours.';
-            
+
             // Clear form data on success
             $_POST = array();
-            
+
         } catch (PDOException $e) {
             error_log("Contact form error: " . $e->getMessage());
             $error = 'Sorry, there was a problem sending your message. Please try again later or contact us directly.';
@@ -120,7 +120,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body>
     <?php $activePage = 'contact'; include 'includes/header.php'; ?>
 
-   
+
 
     <!-- Enhanced Hero Section - Same Style as About Page -->
 <section class="contact-hero">
@@ -143,38 +143,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div class="contact-form-section fade-in">
                 <p class="section-title">Contact Now</p>
                 <h2>Have some questions!</h2>
-                
+
                 <?php if ($error): ?>
                     <div class="alert alert-error"><?php echo htmlspecialchars($error); ?></div>
                 <?php endif; ?>
-                
+
                 <?php if ($success): ?>
                     <div class="alert alert-success"><?php echo $success; ?></div>
                 <?php endif; ?>
-                
+
                 <form method="POST" class="contact-form">
                     <div class="form-row">
                         <div class="form-group">
                             <label for="firstName">First Name</label>
-                            <input 
-                                type="text" 
-                                id="firstName" 
-                                name="firstName" 
-                                required 
+                            <input
+                                type="text"
+                                id="firstName"
+                                name="firstName"
+                                required
                                 placeholder="First Name"
                                 value="<?php echo htmlspecialchars($_POST['firstName'] ?? ''); ?>"
                                 minlength="2"
                                 maxlength="50"
                             >
                         </div>
-                        
+
                         <div class="form-group">
                             <label for="lastName">Last Name</label>
-                            <input 
-                                type="text" 
-                                id="lastName" 
-                                name="lastName" 
-                                required 
+                            <input
+                                type="text"
+                                id="lastName"
+                                name="lastName"
+                                required
                                 placeholder="Last Name"
                                 value="<?php echo htmlspecialchars($_POST['lastName'] ?? ''); ?>"
                                 minlength="2"
@@ -182,23 +182,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             >
                         </div>
                     </div>
-                    
+
                     <div class="form-row">
                         <div class="form-group">
                             <label for="email">Email</label>
-                            <input 
-                                type="email" 
-                                id="email" 
-                                name="email" 
-                                required 
+                            <input
+                                type="email"
+                                id="email"
+                                name="email"
+                                required
                                 placeholder="Email"
                                 value="<?php echo htmlspecialchars($_POST['email'] ?? ''); ?>"
                             >
                         </div>
-                        
-                        
+
+
                     </div>
-                    
+
                     <div class="form-group">
                         <label for="subject">Subject</label>
                         <select id="subject" name="subject" required>
@@ -213,20 +213,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <option value="Other" <?php echo (isset($_POST['subject']) && $_POST['subject'] === 'Other') ? 'selected' : ''; ?>>Other</option>
                         </select>
                     </div>
-                    
+
                     <div class="form-group">
                         <label for="message">Message</label>
-                        <textarea 
-                            id="message" 
-                            name="message" 
-                            required 
+                        <textarea
+                            id="message"
+                            name="message"
+                            required
                             minlength="10"
                             maxlength="2000"
                             placeholder="Send us your message and we will contact you asap"
                         ><?php echo htmlspecialchars($_POST['message'] ?? ''); ?></textarea>
                         <small><?php echo isset($_POST['message']) ? strlen($_POST['message']) : 0; ?> / 2000 characters</small>
                     </div>
-                    
+
                     <button type="submit" class="btn-submit">
                         Submit
                     </button>
@@ -238,7 +238,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <div class="contact-image-wrapper">
                     <img src="assets/images/contact-yoga.jpg" alt="Woman practicing yoga in peaceful outdoor setting">
                 </div>
-                
+
                 <!-- Professional Contact Info - Below Image -->
                 <div class="contact-info-overlay">
                     <div class="contact-info-item">
@@ -252,7 +252,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <small>Phone Support</small>
                         </div>
                     </div>
-                    
+
                     <div class="contact-info-item">
                         <div class="contact-icon">
                             <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -265,7 +265,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <small>Email Support</small>
                         </div>
                     </div>
-                    
+
                     <div class="contact-info-item">
                         <div class="contact-icon">
                             <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -291,7 +291,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <h2>Frequently Asked Questions</h2>
                 <p>Quick answers to common questions about our wellness services</p>
             </div>
-            
+
             <div class="faq-list">
                 <details class="faq-item fade-in">
                     <summary>How quickly will I receive a response?</summary>
@@ -314,7 +314,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </div>
                 </details>
 
-               
+
 
                 <details class="faq-item fade-in" style="animation-delay: 0.4s;">
                     <summary>Are your meditation sessions suitable for beginners?</summary>
@@ -323,7 +323,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </div>
                 </details>
 
-                
+
 
                 <details class="faq-item fade-in" style="animation-delay: 0.6s;">
                     <summary>Do you offer virtual wellness programs?</summary>
@@ -343,18 +343,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Character counter for message
         const messageTextarea = document.getElementById('message');
         const charCount = messageTextarea.nextElementSibling;
-        
+
         messageTextarea.addEventListener('input', function() {
             const length = this.value.length;
             charCount.textContent = `${length} / 20 characters`;
-            
+
             if (length > 20) {
                 charCount.style.color = 'var(--danger)';
             } else {
                 charCount.style.color = 'var(--text-light)';
             }
         });
-        
+
         // Form validation enhancement
         const form = document.querySelector('.contact-form');
         form.addEventListener('submit', function(e) {
@@ -362,20 +362,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             const lastName = document.getElementById('lastName').value.trim();
             const email = document.getElementById('email').value.trim();
             const message = document.getElementById('message').value.trim();
-            
+
             if (firstName.length < 2 || lastName.length < 2) {
                 e.preventDefault();
                 alert('First name and last name must be at least 2 characters long');
                 return false;
             }
-            
+
             if (message.length < 10) {
                 e.preventDefault();
                 alert('Message must be at least 10 characters long');
                 return false;
             }
         });
-        
+
         // Auto-hide success message
         const successAlert = document.querySelector('.alert-success');
         if (successAlert) {
@@ -385,7 +385,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 setTimeout(() => successAlert.remove(), 400);
             }, 8000);
         }
-        
+
         // Intersection observer for animations
         const observerOptions = {
             threshold: 0.1,

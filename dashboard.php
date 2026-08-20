@@ -21,20 +21,20 @@ $username = $_SESSION['username'];
 // Get user's blog posts
 try {
     $db = getDB();
-    
+
     $stmt = $db->prepare("
-    SELECT id, title, content, featured_image, created_at, updated_at 
-    FROM blogPost 
-    WHERE user_id = ? 
+    SELECT id, title, content, featured_image, created_at, updated_at
+    FROM blogPost
+    WHERE user_id = ?
     ORDER BY created_at DESC
    ");
     $stmt->execute([$userId]);
     $userPosts = $stmt->fetchAll();
-    
+
     // Get dashboard stats
     $totalPosts = count($userPosts);
     $lastPost = $userPosts[0]['updated_at'] ?? 'Never';
-    
+
 } catch (Exception $e) {
     $error = "Failed to load dashboard";
     $userPosts = [];
@@ -67,8 +67,8 @@ function formatDate($date) {
             <!-- Session Messages -->
             <?php if (isset($_SESSION['success_message'])): ?>
                 <div class="alert alert-success fade-in" style="margin-bottom: var(--spacing-lg);">
-                    <?php 
-                    echo htmlspecialchars($_SESSION['success_message']); 
+                    <?php
+                    echo htmlspecialchars($_SESSION['success_message']);
                     unset($_SESSION['success_message']);
                     ?>
                 </div>
@@ -76,8 +76,8 @@ function formatDate($date) {
 
             <?php if (isset($_SESSION['error_message'])): ?>
                 <div class="alert alert-error fade-in" style="margin-bottom: var(--spacing-lg);">
-                    <?php 
-                    echo htmlspecialchars($_SESSION['error_message']); 
+                    <?php
+                    echo htmlspecialchars($_SESSION['error_message']);
                     unset($_SESSION['error_message']);
                     ?>
                 </div>
@@ -102,7 +102,7 @@ function formatDate($date) {
                     </div>
                 </div>
             </div>
-            
+
             <!-- Dashboard Stats Grid -->
             <div class="dashboard-stats-grid fade-in">
                 <div class="stat-card-modern">
@@ -164,7 +164,7 @@ function formatDate($date) {
                         </div>
                     <?php endif; ?>
                 </div>
-                
+
                 <?php if (empty($userPosts)): ?>
                     <div class="empty-state-modern">
                         <div class="empty-state-icon">
@@ -190,8 +190,8 @@ function formatDate($date) {
                             <article class="post-card-dashboard fade-in" style="animation-delay: <?php echo ($index * 0.05); ?>s;">
                                 <div class="post-card-image-dashboard">
                                     <?php if (!empty($post['featured_image']) && file_exists($post['featured_image'])): ?>
-                                        <img src="<?php echo htmlspecialchars($post['featured_image']); ?>" 
-                                             alt="<?php echo htmlspecialchars($post['title']); ?>" 
+                                        <img src="<?php echo htmlspecialchars($post['featured_image']); ?>"
+                                             alt="<?php echo htmlspecialchars($post['title']); ?>"
                                              loading="lazy">
                                     <?php else: ?>
                                         <div class="post-card-placeholder">
@@ -207,7 +207,7 @@ function formatDate($date) {
                                         Published
                                     </div>
                                 </div>
-                                
+
                                 <div class="post-card-content-dashboard">
                                     <div class="post-card-header">
                                         <h3 class="post-title-dashboard">
@@ -223,11 +223,11 @@ function formatDate($date) {
                                             </span>
                                         </div>
                                     </div>
-                                    
+
                                     <p class="post-excerpt-dashboard">
                                         <?php echo substr(strip_tags($post['content']), 0, 120); ?>...
                                     </p>
-                                    
+
                                     <div class="post-card-actions">
                                         <a href="view_blog.php?id=<?php echo $post['id']; ?>" class="btn-action btn-view">
                                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">

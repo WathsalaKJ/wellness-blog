@@ -19,18 +19,18 @@ if (empty($category)) {
 // Get blog posts for this category
 try {
     $db = getDB();
-    
+
     // Pagination setup
     $postsPerPage = 9;
     $page = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
     $offset = ($page - 1) * $postsPerPage;
-    
+
     // Get total posts count for this category
     $countStmt = $db->prepare("SELECT COUNT(*) as total FROM blogPost WHERE category = ?");
     $countStmt->execute([$category]);
     $totalPosts = $countStmt->fetch()['total'];
     $totalPages = ceil($totalPosts / $postsPerPage);
-    
+
     // Get posts for current page
    $stmt = $db->prepare("
     SELECT bp.id, bp.title, bp.content, bp.category, bp.featured_image, bp.created_at, u.username, u.id as user_id
@@ -42,7 +42,7 @@ try {
    ");
     $stmt->execute([$category, $postsPerPage, $offset]);
     $posts = $stmt->fetchAll();
-    
+
 } catch (Exception $e) {
     $error = "Failed to load posts";
     $posts = [];
@@ -120,9 +120,9 @@ function formatDate($date) {
                     <?php if ($page > 1): ?>
                         <a href="category_posts.php?category=<?php echo urlencode($category); ?>&page=<?php echo $page - 1; ?>" class="btn btn-secondary">Previous</a>
                     <?php endif; ?>
-                    
+
                     <span class="page-info">Page <?php echo $page; ?> of <?php echo $totalPages; ?></span>
-                    
+
                     <?php if ($page < $totalPages): ?>
                         <a href="category_posts.php?category=<?php echo urlencode($category); ?>&page=<?php echo $page + 1; ?>" class="btn btn-secondary">Next</a>
                     <?php endif; ?>

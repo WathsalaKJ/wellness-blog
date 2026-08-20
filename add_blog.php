@@ -24,32 +24,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $title = isset($_POST['title']) ? trim($_POST['title']) : '';
     $content = isset($_POST['content']) ? trim($_POST['content']) : '';
     $category = isset($_POST['category']) ? trim($_POST['category']) : '';
-    
+
     // Validate inputs
     if (empty($title) || empty($content)) {
         $error = 'Title and content are required';
     } else {
         try {
             $db = getDB();
-            
+
             // Handle image upload
             $imagePath = null;
             if (isset($_FILES['featured_image']) && $_FILES['featured_image']['error'] === UPLOAD_ERR_OK) {
                 $uploadDir = 'uploads/blogs/';
-                
+
                 // Create upload directory if it doesn't exist
                 if (!is_dir($uploadDir)) {
                     mkdir($uploadDir, 0755, true);
                 }
-                
+
                 $fileInfo = pathinfo($_FILES['featured_image']['name']);
                 $extension = strtolower($fileInfo['extension']);
                 $fileName = uniqid() . '_' . time() . '.' . $extension;
                 $uploadPath = $uploadDir . $fileName;
-                
+
                 // Allowed extensions
                 $allowed = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
-                
+
                 if (!in_array($extension, $allowed)) {
                     $error = 'Invalid image format. Allowed: JPG, PNG, GIF, WEBP';
                 } else if ($_FILES['featured_image']['size'] > 5 * 1024 * 1024) { // 5MB limit
@@ -63,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     }
                 }
             }
-            
+
             if (empty($error)) {
                 // Insert blog post
                 $stmt = $db->prepare("
@@ -71,7 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     VALUES (?, ?, ?, ?, ?, NOW(), NOW())
                 ");
                 $stmt->execute([$userId, $title, $content, $category, $imagePath]);
-                
+
                 // Redirect to the new post
                 $postId = $db->lastInsertId();
                 header('Location: view_blog.php?id=' . $postId);
@@ -105,14 +105,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <p class="editor-subtitle">Share your wellness insights with the community</p>
                 </div>
                 <div class="editor-actions">
-                    
+
                 </div>
             </div>
-            
+
             <?php if ($error): ?>
                 <div class="alert alert-error"><?php echo htmlspecialchars($error); ?></div>
             <?php endif; ?>
-            
+
             <form method="POST" enctype="multipart/form-data" class="editor-form" id="blog-form">
                 <div class="editor-layout">
                     <!-- Main Content -->
@@ -129,10 +129,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <option value="Yoga Practices">Yoga Practices</option>
                                 <option value="Meditation">Meditation</option>
                                 <option value="Nutrition">Nutrition</option>
-                                
+
                             </select>
                         </div>
-                        
+
                        <div class="form-group">
                             <label for="content">Content *</label>
                             <div class="editor-toolbar">
@@ -239,7 +239,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <div class="form-actions">
                     <a href="dashboard.php" class="btn btn-secondary">Cancel</a>
                     <button type="submit" class="btn btn-primary btn-lg">
-                        
+
                         Publish Post
                     </button>
                 </div>
@@ -262,22 +262,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Sync editor content with hidden textarea
         function syncContent() {
             let content = contentEditor.innerHTML;
-            
+
             // Clean up empty divs
             content = content.replace(/<div><\/div>/g, '<br>');
             content = content.replace(/<div><br><\/div>/g, '<br>');
-            
+
             // Convert divs to paragraphs for better formatting
             content = content.replace(/<div>/g, '<p>');
             content = content.replace(/<\/div>/g, '</p>');
-            
+
             // Remove multiple consecutive breaks
             content = content.replace(/(<br\s*\/?>\s*){3,}/gi, '<br><br>');
-            
+
             // Wrap text nodes in paragraphs if not already wrapped
             const tempDiv = document.createElement('div');
             tempDiv.innerHTML = content;
-            
+
             let finalContent = '';
             Array.from(tempDiv.childNodes).forEach(node => {
                 if (node.nodeType === Node.TEXT_NODE && node.textContent.trim()) {
@@ -286,7 +286,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     finalContent += node.outerHTML;
                 }
             });
-            
+
             hiddenTextarea.value = finalContent || content;
             updateCounts();
         }
@@ -296,7 +296,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             const text = contentEditor.innerText || '';
             const words = text.trim().split(/\s+/).filter(word => word.length > 0).length;
             const chars = text.length;
-            
+
             wordCount.textContent = `${words} word${words !== 1 ? 's' : ''}`;
             charCount.textContent = `${chars} character${chars !== 1 ? 's' : ''}`;
         }
@@ -392,7 +392,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         function handleDrop(e) {
             const dt = e.dataTransfer;
             const files = dt.files;
-            
+
             if (files.length > 0) {
                 fileInput.files = dt.files;
                 previewImage();
@@ -409,12 +409,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     alert('Please select a valid image file (JPG, PNG, GIF, WEBP)');
                     return;
                 }
-                
+
                 if (file.size > 5 * 1024 * 1024) {
                     alert('File size must be less than 5MB');
                     return;
                 }
-                
+
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     previewImg.src = e.target.result;

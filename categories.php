@@ -11,9 +11,9 @@ require_once 'config/database.php';
 try {
     $db = getDB();
     $stmt = $db->query("
-        SELECT category, COUNT(*) as count 
-        FROM blogPost 
-        WHERE category IS NOT NULL 
+        SELECT category, COUNT(*) as count
+        FROM blogPost
+        WHERE category IS NOT NULL
         GROUP BY category
     ");
     $categoryCounts = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
@@ -40,7 +40,7 @@ $categories = [
         'icon' => '66a86a79e8d3d468816a493d_why-choose-us-img-6.png',
         'count' => $categoryCounts['Nutrition'] ?? 0
     ],
-    
+
 ];
 ?>
 <!DOCTYPE html>
@@ -85,17 +85,17 @@ $categories = [
                     <div class="category-card fade-in" style="animation-delay: <?php echo ($index * 0.1); ?>s;">
                         <div class="category-content">
                         <div class="category-icon">
-                            <img src="assets/images/<?php echo htmlspecialchars($category['icon']); ?>" 
-                                 alt="<?php echo htmlspecialchars($category['name']); ?>" 
+                            <img src="assets/images/<?php echo htmlspecialchars($category['icon']); ?>"
+                                 alt="<?php echo htmlspecialchars($category['name']); ?>"
                                  onerror="this.style.display='none';">
                         </div>
-                        
+
                         <h3 class="category-title"><?php echo htmlspecialchars($category['name']); ?></h3>
                         <p class="category-description"><?php echo htmlspecialchars($category['description']); ?></p>
                         <p class="category-count">
                             <?php echo $category['count']; ?> <?php echo $category['count'] === 1 ? 'post' : 'posts'; ?>
-                        </p>        
-                        
+                        </p>
+
                         <a href="category_posts.php?category=<?php echo urlencode($category['name']); ?>" class="category-read-more">
                             Read More <i class="fas fa-arrow-right"></i>
                         </a>
@@ -135,7 +135,7 @@ $categories = [
         // Add loading animation for category cards
         document.addEventListener('DOMContentLoaded', function() {
             const categoryCards = document.querySelectorAll('.category-card');
-            
+
             categoryCards.forEach((card, index) => {
                 card.style.animationDelay = `${index * 0.1}s`;
             });
