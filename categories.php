@@ -25,7 +25,7 @@ $categories = [
     [
         'name' => 'Yoga Practices',
         'description' => 'Calm your mind, find peace',
-        'icon' => '6684e66d2c36507218ac2fc8_service-thumbnail-img-4.png',
+        'icon' => '66a869f95af9c18c2126b71c_why-choose-us-img-5.png',
         'count' => $categoryCounts['Yoga Practices'] ?? 0
     ],
     [
