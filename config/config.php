@@ -13,27 +13,33 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 // Load environment variables from .env
+// (putenv()/getenv() are avoided here since some hosts, e.g. InfinityFree,
+// disable putenv() for security - so values are read straight from the
+// parsed array instead of round-tripping through the process environment.)
+$env = [];
 if (file_exists(__DIR__ . '/../.env')) {
-    $env = parse_ini_file(__DIR__ . '/../.env');
-    foreach ($env as $key => $value) {
-        putenv("$key=$value");
-    }
+    $env = parse_ini_file(__DIR__ . '/../.env') ?: [];
+}
+
+function env($key, $default = null) {
+    global $env;
+    return $env[$key] ?? $default;
 }
 
 // Database Configuration
-define('DB_HOST', getenv('DB_HOST') ?: 'localhost');
-define('DB_NAME', getenv('DB_NAME') ?: 'soulbalance_blog');
-define('DB_USER', getenv('DB_USER') ?: 'root');
-define('DB_PASS', getenv('DB_PASS') ?: '');
+define('DB_HOST', env('DB_HOST', 'localhost'));
+define('DB_NAME', env('DB_NAME', 'soulbalance_blog'));
+define('DB_USER', env('DB_USER', 'root'));
+define('DB_PASS', env('DB_PASS', ''));
 
 // Application Configuration
 define('APP_NAME', 'SoulBalance');
-define('APP_URL', getenv('APP_URL') ?: 'http://localhost');
+define('APP_URL', env('APP_URL', 'http://localhost'));
 define('SESSION_LIFETIME', 3600); // 1 hour
 define('TIMEZONE', 'UTC');
 
 // Security
-define('SECRET_KEY', getenv('SECRET_KEY') ?: 'your-secret-key-change-in-production');
+define('SECRET_KEY', env('SECRET_KEY', 'your-secret-key-change-in-production'));
 
 // Upload Configuration
 define('UPLOAD_PATH', __DIR__ . '/../uploads/');
@@ -45,7 +51,7 @@ date_default_timezone_set(TIMEZONE);
 
 // Error reporting (hidden from visitors in production)
 error_reporting(E_ALL);
-ini_set('display_errors', getenv('APP_ENV') === 'production' ? 0 : 1);
+ini_set('display_errors', env('APP_ENV') === 'production' ? 0 : 1);
 
 // CORS Headers (optional - for API)
 header('Access-Control-Allow-Origin: *');

@@ -15,17 +15,9 @@
    
    # Protect sensitive files
    <FilesMatch "^\.env$">
-     Order allow,deny
-     Deny from all
+     Require all denied
    </FilesMatch>
    
-   # Set upload limits
-   php_value upload_max_filesize 10M
-   php_value post_max_size 10M
-   php_value max_execution_time 300
-   php_value max_input_time 300
-
-   # Session cookie hardening (must be set here, not via ini_set, since
-   # pages call session_start() before config.php ever runs)
-   php_flag session.cookie_httponly On
-   php_flag session.use_only_cookies On
+   # PHP settings (upload limits, session cookie hardening) live in php.ini
+   # at the project root, not here: InfinityFree runs PHP via CGI, and
+   # php_value/php_flag in .htaccess cause a 500 error under CGI PHP.
