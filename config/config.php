@@ -53,10 +53,16 @@ date_default_timezone_set(TIMEZONE);
 error_reporting(E_ALL);
 ini_set('display_errors', env('APP_ENV') === 'production' ? 0 : 1);
 
-// CORS Headers (optional - for API)
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type, Authorization');
+// CORS Headers (restricted to this app's own origin, since API endpoints
+// rely on session cookies - a wildcard origin would let any other site's
+// JS read authenticated responses)
+$allowedOrigins = [APP_URL];
+if (isset($_SERVER['HTTP_ORIGIN']) && in_array($_SERVER['HTTP_ORIGIN'], $allowedOrigins, true)) {
+    header('Access-Control-Allow-Origin: ' . $_SERVER['HTTP_ORIGIN']);
+    header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
+    header('Access-Control-Allow-Headers: Content-Type, Authorization');
+    header('Access-Control-Allow-Credentials: true');
+}
 
 // Handle preflight requests
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
